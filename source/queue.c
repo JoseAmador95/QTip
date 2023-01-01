@@ -5,7 +5,7 @@
 
 static bool queue_needs_rollover(queueContext_t* pContext, void* pAddr)
 {
-    return pAddr + 1U > pContext->end;
+    return (void*) (pAddr + pContext->elementSize) > pContext->end;
 }
 
 static void advance_front(queueContext_t* pContext)
@@ -64,8 +64,8 @@ queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, s
         pContext->size        = size;
         pContext->start       = pBuffer;
         pContext->end         = pContext->start + (pContext->size - 1U) * pContext->elementSize;
-        pContext->front       = (void**) pContext->start;
-        pContext->rear        = (void**) pContext->start;
+        pContext->front       = pContext->start;
+        pContext->rear        = pContext->start;
         pContext->qty         = 0U;
         pContext->locked      = false;
         status                = QUEUE_GOOD;
@@ -108,7 +108,7 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
             pContext->locked = true;
             advance_rear(pContext);
 
-            memcpy(pContext->rear, &pElement, pContext->elementSize);
+            memcpy(pContext->rear, pElement, pContext->elementSize);
             pContext->qty++;
 
             pContext->locked = false;
@@ -141,7 +141,7 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
         {
             // not empty
             pContext->locked = true;
-            memcpy(pElement, *pContext->front, pContext->elementSize);
+            memcpy(pElement, pContext->front, pContext->elementSize);
             memset(pContext->front, 0U, pContext->elementSize);
             pContext->qty--;
 
@@ -161,7 +161,7 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
     return status;
 }
 
-queueStatus_t queue_peek(queueContext_t* pContext, void** pBuffer, size_t* pSize)
+queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
 {
     queueStatus_t status = QUEUE_GENERIC;
 
@@ -176,8 +176,8 @@ queueStatus_t queue_peek(queueContext_t* pContext, void** pBuffer, size_t* pSize
     else
     {
         pContext->locked = true;
-        *pSize           = pContext->qty;
-        void** pHead     = pContext->front;
+        *pSize      = queue_count_items(pContext);
+        void* pHead = pContext->front;
 
         for (size_t i = 0U; i < pContext->qty; i++)
         {
@@ -189,7 +189,7 @@ queueStatus_t queue_peek(queueContext_t* pContext, void** pBuffer, size_t* pSize
             }
             else
             {
-                pHead++;
+                pHead += pContext->elementSize;
             }
         }
 
