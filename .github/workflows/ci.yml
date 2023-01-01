@@ -1,0 +1,50 @@
+name: Continous Integration
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BUILD_TYPE: Release
+  COMPILER_X86: gcc
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    container: 
+      image: joseamador95/xochi-dev
+      credentials:
+        username: ${{ secrets.DOCKER_HUB_USER }}
+        password: ${{ secrets.DOCKER_HUB_PASS }}
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: Build
+      run: ./scripts/run_build.sh ${{env.COMPILER_X86}}
+      continue-on-error: true
+
+    - name: Linter
+      run: ./scripts/run_linter.sh
+      continue-on-error: true
+
+    - name: Unit Tests
+      run: ./scripts/run_unit_tests.sh
+      continue-on-error: true
+
+    - name: Cyclomatic Complexity Analysis
+      run: ./scripts/run_ccn.sh
+      continue-on-error: true
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: ./artifacts
+
+    - name: Check Results
+      run: ./scripts/check_results.sh
