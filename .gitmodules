@@ -1,0 +1,3 @@
+[submodule "thirdparty/unity"]
+	path = thirdparty/unity
+	url = https://github.com/ThrowTheSwitch/Unity.git
