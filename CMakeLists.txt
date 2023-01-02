@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/source/*.c)
 add_library(${PROJECT_NAME} STATIC ${SRC})
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC include test)
 
 add_subdirectory(thirdparty/unity)
 add_subdirectory(test)
