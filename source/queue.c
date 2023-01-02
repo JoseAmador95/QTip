@@ -64,42 +64,6 @@ static void advance_rear(queueContext_t* pContext)
     }
 }
 
-queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t elementSize)
-{
-    queueStatus_t status = QUEUE_OK;
-
-#if QUEUE_CHECK_ARGS == 1U
-    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
-    status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
-    status = CHECK_STATUS(status, (size > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
-    status = CHECK_STATUS(status, (elementSize > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
-#endif
-
-#if QUEUE_DISABLE_LOCK == 0U
-    status = CHECK_STATUS(status, IS_LOCKED(pContext));
-#endif
-
-    if (status == QUEUE_OK)
-    {
-        pContext->elementSize = elementSize;
-        pContext->size        = size;
-        pContext->start       = pBuffer;
-        pContext->end         = pContext->start + (pContext->size - 1U) * pContext->elementSize;
-        pContext->front       = pContext->start;
-        pContext->rear        = pContext->start;
-        pContext->qty         = 0U;
-#if QUEUE_DISABLE_LOCK == 0U
-        pContext->locked = false;
-#endif
-#if QUEUE_COUNT_ITEMS == 1U
-        pContext->total     = 0U;
-        pContext->processed = 0U;
-#endif
-    }
-
-    return status;
-}
-
 QUEUE_API bool queue_is_full(queueContext_t* pContext)
 {
     bool isFull = false;
@@ -135,6 +99,42 @@ QUEUE_API void queue_lock(queueContext_t* pContext)
 QUEUE_API void queue_unlock(queueContext_t* pContext)
 {
     pContext->locked = false;
+}
+
+queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t elementSize)
+{
+    queueStatus_t status = QUEUE_OK;
+
+#if QUEUE_CHECK_ARGS == 1U
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
+    status = CHECK_STATUS(status, (size > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
+    status = CHECK_STATUS(status, (elementSize > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
+#endif
+
+#if QUEUE_DISABLE_LOCK == 0U
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    if (status == QUEUE_OK)
+    {
+        pContext->elementSize = elementSize;
+        pContext->size        = size;
+        pContext->start       = pBuffer;
+        pContext->end         = pContext->start + (pContext->size - 1U) * pContext->elementSize;
+        pContext->front       = pContext->start;
+        pContext->rear        = pContext->start;
+        pContext->qty         = 0U;
+#if QUEUE_DISABLE_LOCK == 0U
+        pContext->locked = false;
+#endif
+#if QUEUE_COUNT_ITEMS == 1U
+        pContext->total     = 0U;
+        pContext->processed = 0U;
+#endif
+    }
+
+    return status;
 }
 
 queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
