@@ -36,6 +36,7 @@
     - +:test/**
   :include:
     - include
+    - test
   :source:
     - source
   # :support:

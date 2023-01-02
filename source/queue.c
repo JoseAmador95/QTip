@@ -3,6 +3,24 @@
 #include <stddef.h>
 #include <string.h>
 
+#if QUEUE_DISABLE_LOCK == 0
+#define QUEUE_LOCK(context)   ((queueContext_t*) (context))->locked = true
+#define QUEUE_UNLOCK(context) ((queueContext_t*) (context))->locked = false
+#else
+#define QUEUE_LOCK(context)
+#define QUEUE_UNLOCK(context)
+#endif
+
+#if QUEUE_REDUCED_API == 0
+#define QUEUE_API
+#else
+#define QUEUE_API static inline
+#endif
+
+#define CHECK_NULL_PRT(ptr)       (((ptr) != NULL) ? QUEUE_OK : QUEUE_NULL_PTR)
+#define IS_LOCKED(context)        ((!(context)->locked) ? QUEUE_OK : QUEUE_LOCKED)
+#define CHECK_STATUS(status, exp) (((status) == QUEUE_OK) ? (exp) : (status))
+
 static bool queue_needs_rollover(queueContext_t* pContext, void* pAddr)
 {
     return (void*) (pAddr + pContext->elementSize) > pContext->end;
@@ -48,17 +66,20 @@ static void advance_rear(queueContext_t* pContext)
 
 queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t elementSize)
 {
-    queueStatus_t status = QUEUE_GENERIC;
+    queueStatus_t status = QUEUE_OK;
 
-    if (pBuffer == NULL || pContext == NULL)
-    {
-        status = QUEUE_NULL_PTR;
-    }
-    else if (size == 0U)
-    {
-        status = QUEUE_INVALID_SIZE;
-    }
-    else
+#if QUEUE_CHECK_ARGS == 1U
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
+    status = CHECK_STATUS(status, (size > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
+    status = CHECK_STATUS(status, (elementSize > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
+#endif
+
+#if QUEUE_DISABLE_LOCK == 0U
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    if (status == QUEUE_OK)
     {
         pContext->elementSize = elementSize;
         pContext->size        = size;
@@ -67,52 +88,87 @@ queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, s
         pContext->front       = pContext->start;
         pContext->rear        = pContext->start;
         pContext->qty         = 0U;
-        pContext->locked      = false;
-        status                = QUEUE_GOOD;
+#if QUEUE_DISABLE_LOCK == 0U
+        pContext->locked = false;
+#endif
+#if QUEUE_COUNT_ITEMS == 1U
+        pContext->total     = 0U;
+        pContext->processed = 0U;
+#endif
     }
 
     return status;
 }
 
-bool queue_is_full(queueContext_t* pContext)
+QUEUE_API bool queue_is_full(queueContext_t* pContext)
 {
-    return pContext->qty == pContext->size;
+    bool isFull = false;
+
+    if (pContext != NULL)
+    {
+        isFull = pContext->qty == pContext->size;
+    }
+
+    return isFull;
 }
 
-bool queue_is_empty(queueContext_t* pContext)
+QUEUE_API bool queue_is_empty(queueContext_t* pContext)
 {
     return pContext->qty == 0U;
 }
 
-size_t queue_count_items(queueContext_t* pContext)
+QUEUE_API size_t queue_count_items(queueContext_t* pContext)
 {
     return pContext->qty;
 }
 
+QUEUE_API bool queue_is_locked(queueContext_t* pContext)
+{
+    return pContext->locked;
+}
+
+QUEUE_API void queue_lock(queueContext_t* pContext)
+{
+    pContext->locked = true;
+}
+
+QUEUE_API void queue_unlock(queueContext_t* pContext)
+{
+    pContext->locked = false;
+}
+
 queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
 {
-    queueStatus_t status = QUEUE_GENERIC;
+    queueStatus_t status = QUEUE_OK;
 
-    if (pContext == NULL || pElement == NULL)
-    {
-        status = QUEUE_NULL_PTR;
-    }
-    else if (pContext->locked)
-    {
-        status = QUEUE_LOCKED;
-    }
-    else
+#if QUEUE_CHECK_ARGS == 1U
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pElement));
+#endif
+
+#if QUEUE_DISABLE_LOCK == 0U
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    if (status == QUEUE_OK)
     {
         if (!queue_is_full(pContext))
         {
-            pContext->locked = true;
+#if QUEUE_DISABLE_LOCK == 0U
+            queue_lock(pContext);
+#endif
             advance_rear(pContext);
 
             memcpy(pContext->rear, pElement, pContext->elementSize);
             pContext->qty++;
 
-            pContext->locked = false;
-            status           = QUEUE_GOOD;
+#if QUEUE_COUNT_ITEMS == 1U
+            pContext->total++;
+#endif
+
+#if QUEUE_DISABLE_LOCK == 0U
+            queue_unlock(pContext);
+#endif
         }
         else
         {
@@ -125,57 +181,66 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
 
 queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
 {
-    queueStatus_t status = QUEUE_GENERIC;
+    queueStatus_t status = QUEUE_OK;
 
-    if (pContext == NULL)
-    {
-        status = QUEUE_NULL_PTR;
-    }
-    else if (pContext->locked)
-    {
-        status = QUEUE_LOCKED;
-    }
-    else
+#if QUEUE_CHECK_ARGS == 1U
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pElement));
+#endif
+
+#if QUEUE_DISABLE_LOCK == 0U
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    if (status == QUEUE_OK)
     {
         if (!queue_is_empty(pContext))
         {
-            // not empty
-            pContext->locked = true;
+#if QUEUE_DISABLE_LOCK == 0U
+            queue_lock(pContext);
+#endif
             memcpy(pElement, pContext->front, pContext->elementSize);
             memset(pContext->front, 0U, pContext->elementSize);
             pContext->qty--;
 
             advance_front(pContext);
 
-            pContext->locked = false;
-            status           = QUEUE_GOOD;
+#if QUEUE_COUNT_ITEMS == 1U
+            pContext->processed++;
+#endif
+
+#if QUEUE_DISABLE_LOCK == 0U
+            queue_unlock(pContext);
+#endif
         }
         else
         {
-            // empty
             status = QUEUE_EMPTY;
         }
     }
 
-    (void) pElement;
     return status;
 }
 
 queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
 {
-    queueStatus_t status = QUEUE_GENERIC;
+    queueStatus_t status = QUEUE_OK;
 
-    if (pContext == NULL || pBuffer == NULL || pSize == NULL)
+#if QUEUE_CHECK_ARGS == 1U
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pSize));
+#endif
+
+#if QUEUE_DISABLE_LOCK == 0U
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    if (status == QUEUE_OK)
     {
-        status = QUEUE_NULL_PTR;
-    }
-    else if (pContext->locked)
-    {
-        status = QUEUE_LOCKED;
-    }
-    else
-    {
-        pContext->locked = true;
+#if QUEUE_DISABLE_LOCK == 0U
+        queue_lock(pContext);
+#endif
         *pSize      = queue_count_items(pContext);
         void* pHead = pContext->front;
 
@@ -193,7 +258,40 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
             }
         }
 
-        pContext->locked = false;
+#if QUEUE_DISABLE_LOCK == 0U
+        queue_unlock(pContext);
+#endif
+    }
+
+    return status;
+}
+
+queueStatus_t queue_purge(queueContext_t* pContext)
+{
+    queueStatus_t status = QUEUE_OK;
+
+#if QUEUE_CHECK_ARGS == 1U
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+#endif
+
+#if QUEUE_DISABLE_LOCK == 0U
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    if (status == QUEUE_OK)
+    {
+#if QUEUE_DISABLE_LOCK == 0U
+        queue_lock(pContext);
+#endif
+
+        pContext->qty = 0;
+        memset(pContext->start, 0U, pContext->size * pContext->elementSize);
+        advance_rear(pContext);
+        advance_front(pContext);
+
+#if QUEUE_DISABLE_LOCK == 0U
+        queue_unlock(pContext);
+#endif
     }
 
     return status;
