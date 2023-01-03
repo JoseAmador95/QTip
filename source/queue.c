@@ -15,7 +15,7 @@
 
 static bool queue_needs_rollover(queueContext_t* pContext, void* pAddr)
 {
-    return (void*) (pAddr + pContext->elementSize) > pContext->end;
+    return (void*) (pAddr + pContext->itemSize) > pContext->end;
 }
 
 static void advance_front(queueContext_t* pContext)
@@ -86,7 +86,7 @@ QUEUE_API void queue_unlock(queueContext_t* pContext)
     pContext->locked = false;
 }
 
-queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t elementSize)
+queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t itemSize)
 {
     queueStatus_t status = QUEUE_OK;
 
@@ -94,7 +94,7 @@ queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, s
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
     status = CHECK_STATUS(status, (size > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
-    status = CHECK_STATUS(status, (elementSize > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
+    status = CHECK_STATUS(status, (itemSize > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
 #endif
 
 #ifndef DISABLE_LOCK
@@ -103,13 +103,13 @@ queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, s
 
     if (status == QUEUE_OK)
     {
-        pContext->elementSize = elementSize;
-        pContext->size        = size;
-        pContext->start       = pBuffer;
-        pContext->end         = pContext->start + (pContext->size - 1U) * pContext->elementSize;
-        pContext->front       = pContext->start;
-        pContext->rear        = pContext->start;
-        pContext->qty         = 0U;
+        pContext->itemSize = itemSize;
+        pContext->size     = size;
+        pContext->start    = pBuffer;
+        pContext->end      = pContext->start + (pContext->size - 1U) * pContext->itemSize;
+        pContext->front    = pContext->start;
+        pContext->rear     = pContext->start;
+        pContext->qty      = 0U;
 #ifndef DISABLE_LOCK
         pContext->locked = false;
 #endif
@@ -144,7 +144,7 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
 #endif
             advance_rear(pContext);
 
-            memcpy(pContext->rear, pElement, pContext->elementSize);
+            memcpy(pContext->rear, pElement, pContext->itemSize);
             pContext->qty++;
 
 #ifndef DISABLE_QUEUE_TELEMETRY
@@ -184,8 +184,8 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
 #ifndef DISABLE_LOCK
             queue_lock(pContext);
 #endif
-            memcpy(pElement, pContext->front, pContext->elementSize);
-            memset(pContext->front, 0U, pContext->elementSize);
+            memcpy(pElement, pContext->front, pContext->itemSize);
+            memset(pContext->front, 0U, pContext->itemSize);
             pContext->qty--;
 
             advance_front(pContext);
@@ -231,7 +231,7 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
 
         for (size_t i = 0U; i < pContext->qty; i++)
         {
-            memcpy(pBuffer + i, pHead, pContext->elementSize);
+            memcpy(pBuffer + i, pHead, pContext->itemSize);
 
             if (queue_needs_rollover(pContext, pHead))
             {
@@ -239,7 +239,7 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
             }
             else
             {
-                pHead += pContext->elementSize;
+                pHead += pContext->itemSize;
             }
         }
 
@@ -270,7 +270,7 @@ queueStatus_t queue_purge(queueContext_t* pContext)
 #endif
 
         pContext->qty = 0;
-        memset(pContext->start, 0U, pContext->size * pContext->elementSize);
+        memset(pContext->start, 0U, pContext->size * pContext->itemSize);
         advance_rear(pContext);
         advance_front(pContext);
 

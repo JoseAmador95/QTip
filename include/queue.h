@@ -22,13 +22,13 @@ typedef enum
  */
 typedef struct
 {
-    size_t size;        //!< Number of items allowed in the queue
-    size_t qty;         //!< Current number of items in the queue
-    void* start;        //!< Pointer to the start of the queue
-    void* end;          //!< Pointer to the end of the queue
-    void* front;        //!< Pointer to the front of the queue
-    void* rear;         //!< Pointer to the rear of the queue
-    size_t elementSize; //!< Size of each item in the queue
+    size_t size;     //!< Number of items allowed in the queue
+    size_t qty;      //!< Current number of items in the queue
+    void* start;     //!< Pointer to the start of the queue
+    void* end;       //!< Pointer to the end of the queue
+    void* front;     //!< Pointer to the front of the queue
+    void* rear;      //!< Pointer to the rear of the queue
+    size_t itemSize; //!< Size of each item in the queue
 #ifndef DISABLE_LOCK
     bool locked; //!< Lock status
 #endif
@@ -44,11 +44,11 @@ typedef struct
  * @param[in] pContext Pointer to queue context
  * @param[in] pQueue   Pointer to queue in memory.
  * @param[in] size     Maximum number of items allowed in the queue
- * @param[in] elementSize Size of the item to store in the queue
- * @note      pQueue must be at least size * elementSize bytes
+ * @param[in] itemSize Size of the item to store in the queue
+ * @note      pQueue must be at least size * itemSize bytes
  * @returns   Operation status
  */
-queueStatus_t queue_init(queueContext_t* pContext, void* pQueue, size_t size, size_t elementSize);
+queueStatus_t queue_init(queueContext_t* pContext, void* pQueue, size_t size, size_t itemSize);
 
 /**
  * @brief     Put an item in a queue
@@ -74,7 +74,7 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement);
  * @param[in] pContext Pointer to queue context
  * @param[in] pBuffer  Pointer to buffer to store the copy of the queue
  * @param[in] pSize    Pointer to variable to store the number of items in the queue
- * @note      pBuffer should be size * elementSize bytes
+ * @note      pBuffer should be size * itemSize bytes
  * @returns   Operation status
  */
 queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize);
