@@ -3,15 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#if QUEUE_DISABLE_LOCK == 0
-#define QUEUE_LOCK(context)   ((queueContext_t*) (context))->locked = true
-#define QUEUE_UNLOCK(context) ((queueContext_t*) (context))->locked = false
-#else
-#define QUEUE_LOCK(context)
-#define QUEUE_UNLOCK(context)
-#endif
-
-#if QUEUE_REDUCED_API == 0
+#ifndef REDUCED_API
 #define QUEUE_API
 #else
 #define QUEUE_API static inline
@@ -66,14 +58,7 @@ static void advance_rear(queueContext_t* pContext)
 
 QUEUE_API bool queue_is_full(queueContext_t* pContext)
 {
-    bool isFull = false;
-
-    if (pContext != NULL)
-    {
-        isFull = pContext->qty == pContext->size;
-    }
-
-    return isFull;
+    return pContext->qty == pContext->size;
 }
 
 QUEUE_API bool queue_is_empty(queueContext_t* pContext)
@@ -105,14 +90,14 @@ queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, s
 {
     queueStatus_t status = QUEUE_OK;
 
-#if QUEUE_CHECK_ARGS == 1U
+#ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
     status = CHECK_STATUS(status, (size > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
     status = CHECK_STATUS(status, (elementSize > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
 #endif
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
@@ -125,10 +110,10 @@ queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, s
         pContext->front       = pContext->start;
         pContext->rear        = pContext->start;
         pContext->qty         = 0U;
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
         pContext->locked = false;
 #endif
-#if QUEUE_COUNT_ITEMS == 1U
+#ifndef DISABLE_QUEUE_TELEMETRY
         pContext->total     = 0U;
         pContext->processed = 0U;
 #endif
@@ -141,12 +126,12 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
 {
     queueStatus_t status = QUEUE_OK;
 
-#if QUEUE_CHECK_ARGS == 1U
+#ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pElement));
 #endif
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
@@ -154,7 +139,7 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
     {
         if (!queue_is_full(pContext))
         {
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
             queue_lock(pContext);
 #endif
             advance_rear(pContext);
@@ -162,11 +147,11 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
             memcpy(pContext->rear, pElement, pContext->elementSize);
             pContext->qty++;
 
-#if QUEUE_COUNT_ITEMS == 1U
+#ifndef DISABLE_QUEUE_TELEMETRY
             pContext->total++;
 #endif
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
             queue_unlock(pContext);
 #endif
         }
@@ -183,12 +168,12 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
 {
     queueStatus_t status = QUEUE_OK;
 
-#if QUEUE_CHECK_ARGS == 1U
+#ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pElement));
 #endif
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
@@ -196,7 +181,7 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
     {
         if (!queue_is_empty(pContext))
         {
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
             queue_lock(pContext);
 #endif
             memcpy(pElement, pContext->front, pContext->elementSize);
@@ -205,11 +190,11 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
 
             advance_front(pContext);
 
-#if QUEUE_COUNT_ITEMS == 1U
+#ifndef DISABLE_QUEUE_TELEMETRY
             pContext->processed++;
 #endif
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
             queue_unlock(pContext);
 #endif
         }
@@ -226,19 +211,19 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
 {
     queueStatus_t status = QUEUE_OK;
 
-#if QUEUE_CHECK_ARGS == 1U
+#ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pSize));
 #endif
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
     if (status == QUEUE_OK)
     {
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
         queue_lock(pContext);
 #endif
         *pSize      = queue_count_items(pContext);
@@ -258,7 +243,7 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
             }
         }
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
         queue_unlock(pContext);
 #endif
     }
@@ -270,17 +255,17 @@ queueStatus_t queue_purge(queueContext_t* pContext)
 {
     queueStatus_t status = QUEUE_OK;
 
-#if QUEUE_CHECK_ARGS == 1U
+#ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
 #endif
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
     if (status == QUEUE_OK)
     {
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
         queue_lock(pContext);
 #endif
 
@@ -289,7 +274,7 @@ queueStatus_t queue_purge(queueContext_t* pContext)
         advance_rear(pContext);
         advance_front(pContext);
 
-#if QUEUE_DISABLE_LOCK == 0U
+#ifndef DISABLE_LOCK
         queue_unlock(pContext);
 #endif
     }
