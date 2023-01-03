@@ -17,8 +17,19 @@
  * Private defines
  */
 
-#define CHECK_NULL_PRT(ptr)       (((ptr) != NULL) ? QUEUE_OK : QUEUE_NULL_PTR)
-#define IS_LOCKED(context)        ((!(context)->locked) ? QUEUE_OK : QUEUE_LOCKED)
+/**
+ * @brief Check whether the input is a null pointer
+ */
+#define CHECK_NULL_PRT(ptr) (((ptr) != NULL) ? QUEUE_OK : QUEUE_NULL_PTR)
+
+/**
+ * @brief Check whether the queue is locked
+ */
+#define IS_LOCKED(context) ((!queue_is_locked((context))) ? QUEUE_OK : QUEUE_LOCKED)
+
+/**
+ * @brief Combine the current status with a new expression
+ */
 #define CHECK_STATUS(status, exp) (((status) == QUEUE_OK) ? (exp) : (status))
 
 /*
