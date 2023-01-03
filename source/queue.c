@@ -57,7 +57,7 @@ static void advance_front(queueContext_t* pContext)
     else
     {
         // Move to next element in the array
-        pContext->front++;
+        pContext->front += pContext->itemSize;
     }
 }
 
@@ -75,7 +75,7 @@ static void advance_rear(queueContext_t* pContext)
     }
     else
     {
-        pContext->rear++;
+        pContext->rear += pContext->itemSize;
     }
 }
 
@@ -262,7 +262,7 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
 
         for (size_t i = 0U; i < pContext->qty; i++)
         {
-            memcpy(pBuffer + i, pHead, pContext->itemSize);
+            memcpy(pBuffer + i * pContext->itemSize, pHead, pContext->itemSize);
 
             if (queue_needs_rollover(pContext, pHead))
             {
