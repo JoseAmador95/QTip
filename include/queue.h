@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+/*
+ * Public Enum
+ */
+
 /**
  * @brief Queue operation status
  */
@@ -16,6 +20,10 @@ typedef enum
     QUEUE_INVALID_SIZE, //!< Invalid queue size
     QUEUE_LOCKED        //!< Queue is locked
 } queueStatus_t;
+
+/*
+ * Public Structs
+ */
 
 /**
  * @brief Queue context structure
@@ -37,6 +45,10 @@ typedef struct
     size_t total;     //!< Number of items introduced to the queue
 #endif
 } queueContext_t;
+
+/*
+ * Public API (Reduced API)
+ */
 
 /**
  * @brief     Initialize queue context
@@ -86,6 +98,10 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
  * @returns   Operation status
  */
 queueStatus_t queue_purge(queueContext_t* pContext);
+
+/*
+ * Extended API
+ */
 
 #ifndef REDUCED_API
 

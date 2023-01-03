@@ -3,15 +3,27 @@
 #include <stddef.h>
 #include <string.h>
 
+/*
+ * Macro Magic
+ */
+
 #ifndef REDUCED_API
 #define QUEUE_API
 #else
 #define QUEUE_API static inline
 #endif
 
+/*
+ * Private defines
+ */
+
 #define CHECK_NULL_PRT(ptr)       (((ptr) != NULL) ? QUEUE_OK : QUEUE_NULL_PTR)
 #define IS_LOCKED(context)        ((!(context)->locked) ? QUEUE_OK : QUEUE_LOCKED)
 #define CHECK_STATUS(status, exp) (((status) == QUEUE_OK) ? (exp) : (status))
+
+/*
+ * Private functions
+ */
 
 static bool queue_needs_rollover(queueContext_t* pContext, void* pAddr)
 {
@@ -56,6 +68,10 @@ static void advance_rear(queueContext_t* pContext)
     }
 }
 
+/*
+ * Extended API
+ */
+
 QUEUE_API bool queue_is_full(queueContext_t* pContext)
 {
     return pContext->qty == pContext->size;
@@ -85,6 +101,10 @@ QUEUE_API void queue_unlock(queueContext_t* pContext)
 {
     pContext->locked = false;
 }
+
+/*
+ * Public API (Reduced API)
+ */
 
 queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t itemSize)
 {
