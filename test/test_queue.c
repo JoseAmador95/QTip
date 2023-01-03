@@ -3,9 +3,9 @@
 
 #include <string.h>
 
-#define QUEUE_SIZE 100U
+#define QUEUE_SIZE 10U
 
-typedef uint8_t type_t;
+typedef uint32_t type_t;
 
 queueContext_t context;
 type_t queue[QUEUE_SIZE];
