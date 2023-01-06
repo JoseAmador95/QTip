@@ -1,5 +1,5 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef QTIP_H
+#define QTIP_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -13,13 +13,13 @@
  */
 typedef enum
 {
-    QUEUE_OK,           //!< Operation succeded
-    QUEUE_FULL,         //!< Queue is full
-    QUEUE_EMPTY,        //!< Queue is empty
-    QUEUE_NULL_PTR,     //!< Null pointer encountered
-    QUEUE_INVALID_SIZE, //!< Invalid queue size
-    QUEUE_LOCKED        //!< Queue is locked
-} queueStatus_t;
+    QTIP_STATUS_OK,           //!< Operation succeded
+    QTIP_STATUS_FULL,         //!< Queue is full
+    QTIP_STATUS_EMPTY,        //!< Queue is empty
+    QTIP_STATUS_NULL_PTR,     //!< Null pointer encountered
+    QTIP_STATUS_INVALID_SIZE, //!< Invalid queue size
+    QTIP_STATUS_LOCKED        //!< Queue is locked
+} qtipStatus_t;
 
 /*
  * Public Structs
@@ -60,7 +60,7 @@ typedef struct
  * @note      pQueue must be at least size * itemSize bytes
  * @returns   Operation status
  */
-queueStatus_t queue_init(queueContext_t* pContext, void* pQueue, size_t size, size_t itemSize);
+qtipStatus_t qtip_init(queueContext_t* pContext, void* pQueue, size_t size, size_t itemSize);
 
 /**
  * @brief     Put an item in a queue
@@ -69,7 +69,7 @@ queueStatus_t queue_init(queueContext_t* pContext, void* pQueue, size_t size, si
  * @param[in] pElement Pointer to item to store in the queue
  * @returns   Operation status
  */
-queueStatus_t queue_put(queueContext_t* pContext, void* pElement);
+qtipStatus_t qtip_put(queueContext_t* pContext, void* pElement);
 
 /**
  * @brief     Extract the next item from the queue
@@ -78,7 +78,7 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement);
  * @param[in] pElement Pointer to item to store in the queue
  * @returns   Operation status
  */
-queueStatus_t queue_pop(queueContext_t* pContext, void* pElement);
+qtipStatus_t qtip_pop(queueContext_t* pContext, void* pElement);
 
 /**
  * @brief     Copies every element of the queue into a buffer
@@ -89,7 +89,7 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement);
  * @note      pBuffer should be size * itemSize bytes
  * @returns   Operation status
  */
-queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize);
+qtipStatus_t qtip_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize);
 
 /**
  * @brief     Removes all the items from the queue
@@ -97,7 +97,7 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
  * @param[in] pContext Pointer to queue context
  * @returns   Operation status
  */
-queueStatus_t queue_purge(queueContext_t* pContext);
+qtipStatus_t qtip_purge(queueContext_t* pContext);
 
 /*
  * Extended API
@@ -111,7 +111,7 @@ queueStatus_t queue_purge(queueContext_t* pContext);
  * @note      This function is part of the extended API
  * @returns   True if full
  */
-bool queue_is_full(queueContext_t* pContext);
+bool qtip_is_full(queueContext_t* pContext);
 
 /**
  * @brief     Checks whether the queue is empty
@@ -119,7 +119,7 @@ bool queue_is_full(queueContext_t* pContext);
  * @note      This function is part of the extended API
  * @returns   True if empty
  */
-bool queue_is_empty(queueContext_t* pContext);
+bool qtip_is_empty(queueContext_t* pContext);
 
 /**
  * @brief     Gets the number of items in the queue
@@ -127,7 +127,7 @@ bool queue_is_empty(queueContext_t* pContext);
  * @note      This function is part of the extended API
  * @returns   Number of items in the queue
  */
-size_t queue_count_items(queueContext_t* pContext);
+size_t qtip_count_items(queueContext_t* pContext);
 
 #ifndef DISABLE_LOCK
 /**
@@ -137,21 +137,21 @@ size_t queue_count_items(queueContext_t* pContext);
  * @note      This function is part of the extended API
  * @returns   Operation status
  */
-bool queue_is_locked(queueContext_t* pContext);
+bool qtip_is_locked(queueContext_t* pContext);
 
 /**
  * @brief     Locks the queue
  * @param[in] pContext Pointer to queue context
  * @note      This function is part of the extended API
  */
-void queue_lock(queueContext_t* pContext);
+void qtip_lock(queueContext_t* pContext);
 
 /**
  * @brief     Unlocks the queue
  * @param[in] pContext Pointer to queue context
  * @note      This function is part of the extended API
  */
-void queue_unlock(queueContext_t* pContext);
+void qtip_unlock(queueContext_t* pContext);
 
 #endif
 #endif

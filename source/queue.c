@@ -8,9 +8,9 @@
  */
 
 #ifndef REDUCED_API
-#define QUEUE_API
+#define REDUCED
 #else
-#define QUEUE_API static inline
+#define REDUCED static inline
 #endif
 
 /*
@@ -20,17 +20,17 @@
 /**
  * @brief Check whether the input is a null pointer
  */
-#define CHECK_NULL_PRT(ptr) (((ptr) != NULL) ? QUEUE_OK : QUEUE_NULL_PTR)
+#define CHECK_NULL_PRT(ptr) (((ptr) != NULL) ? QTIP_STATUS_OK : QTIP_STATUS_NULL_PTR)
 
 /**
  * @brief Check whether the queue is locked
  */
-#define IS_LOCKED(context) ((!queue_is_locked((context))) ? QUEUE_OK : QUEUE_LOCKED)
+#define IS_LOCKED(context) ((!qtip_is_locked((context))) ? QTIP_STATUS_OK : QTIP_STATUS_LOCKED)
 
 /**
  * @brief Combine the current status with a new expression
  */
-#define CHECK_STATUS(status, exp) (((status) == QUEUE_OK) ? (exp) : (status))
+#define CHECK_STATUS(status, exp) (((status) == QTIP_STATUS_OK) ? (exp) : (status))
 
 /*
  * Private functions
@@ -43,7 +43,7 @@ static bool queue_needs_rollover(queueContext_t* pContext, void* pAddr)
 
 static void advance_front(queueContext_t* pContext)
 {
-    if (queue_is_empty(pContext))
+    if (qtip_is_empty(pContext))
     {
         // Move front and rear to default state
         pContext->front = pContext->start;
@@ -63,7 +63,7 @@ static void advance_front(queueContext_t* pContext)
 
 static void advance_rear(queueContext_t* pContext)
 {
-    if (queue_is_full(pContext) || queue_is_empty(pContext))
+    if (qtip_is_full(pContext) || qtip_is_empty(pContext))
     {
         // Allign rear and front
         pContext->rear = pContext->front;
@@ -83,32 +83,32 @@ static void advance_rear(queueContext_t* pContext)
  * Extended API
  */
 
-QUEUE_API bool queue_is_full(queueContext_t* pContext)
+REDUCED bool qtip_is_full(queueContext_t* pContext)
 {
     return pContext->qty == pContext->size;
 }
 
-QUEUE_API bool queue_is_empty(queueContext_t* pContext)
+REDUCED bool qtip_is_empty(queueContext_t* pContext)
 {
     return pContext->qty == 0U;
 }
 
-QUEUE_API size_t queue_count_items(queueContext_t* pContext)
+REDUCED size_t qtip_count_items(queueContext_t* pContext)
 {
     return pContext->qty;
 }
 
-QUEUE_API bool queue_is_locked(queueContext_t* pContext)
+REDUCED bool qtip_is_locked(queueContext_t* pContext)
 {
     return pContext->locked;
 }
 
-QUEUE_API void queue_lock(queueContext_t* pContext)
+REDUCED void qtip_lock(queueContext_t* pContext)
 {
     pContext->locked = true;
 }
 
-QUEUE_API void queue_unlock(queueContext_t* pContext)
+REDUCED void qtip_unlock(queueContext_t* pContext)
 {
     pContext->locked = false;
 }
@@ -117,22 +117,22 @@ QUEUE_API void queue_unlock(queueContext_t* pContext)
  * Public API (Reduced API)
  */
 
-queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t itemSize)
+qtipStatus_t qtip_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t itemSize)
 {
-    queueStatus_t status = QUEUE_OK;
+    qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
-    status = CHECK_STATUS(status, (size > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
-    status = CHECK_STATUS(status, (itemSize > 0U) ? QUEUE_OK : QUEUE_INVALID_SIZE);
+    status = CHECK_STATUS(status, (size > 0U) ? QTIP_STATUS_OK : QTIP_STATUS_INVALID_SIZE);
+    status = CHECK_STATUS(status, (itemSize > 0U) ? QTIP_STATUS_OK : QTIP_STATUS_INVALID_SIZE);
 #endif
 
 #ifndef DISABLE_LOCK
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
-    if (status == QUEUE_OK)
+    if (status == QTIP_STATUS_OK)
     {
         pContext->itemSize = itemSize;
         pContext->size     = size;
@@ -153,9 +153,9 @@ queueStatus_t queue_init(queueContext_t* pContext, void* pBuffer, size_t size, s
     return status;
 }
 
-queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
+qtipStatus_t qtip_put(queueContext_t* pContext, void* pElement)
 {
-    queueStatus_t status = QUEUE_OK;
+    qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
@@ -166,12 +166,12 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
-    if (status == QUEUE_OK)
+    if (status == QTIP_STATUS_OK)
     {
-        if (!queue_is_full(pContext))
+        if (!qtip_is_full(pContext))
         {
 #ifndef DISABLE_LOCK
-            queue_lock(pContext);
+            qtip_lock(pContext);
 #endif
             advance_rear(pContext);
 
@@ -183,21 +183,21 @@ queueStatus_t queue_put(queueContext_t* pContext, void* pElement)
 #endif
 
 #ifndef DISABLE_LOCK
-            queue_unlock(pContext);
+            qtip_unlock(pContext);
 #endif
         }
         else
         {
-            status = QUEUE_FULL;
+            status = QTIP_STATUS_FULL;
         }
     }
 
     return status;
 }
 
-queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
+qtipStatus_t qtip_pop(queueContext_t* pContext, void* pElement)
 {
-    queueStatus_t status = QUEUE_OK;
+    qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
@@ -208,12 +208,12 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
-    if (status == QUEUE_OK)
+    if (status == QTIP_STATUS_OK)
     {
-        if (!queue_is_empty(pContext))
+        if (!qtip_is_empty(pContext))
         {
 #ifndef DISABLE_LOCK
-            queue_lock(pContext);
+            qtip_lock(pContext);
 #endif
             memcpy(pElement, pContext->front, pContext->itemSize);
             memset(pContext->front, 0U, pContext->itemSize);
@@ -226,21 +226,21 @@ queueStatus_t queue_pop(queueContext_t* pContext, void* pElement)
 #endif
 
 #ifndef DISABLE_LOCK
-            queue_unlock(pContext);
+            qtip_unlock(pContext);
 #endif
         }
         else
         {
-            status = QUEUE_EMPTY;
+            status = QTIP_STATUS_EMPTY;
         }
     }
 
     return status;
 }
 
-queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
+qtipStatus_t qtip_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
 {
-    queueStatus_t status = QUEUE_OK;
+    qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
@@ -252,12 +252,12 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
-    if (status == QUEUE_OK)
+    if (status == QTIP_STATUS_OK)
     {
 #ifndef DISABLE_LOCK
-        queue_lock(pContext);
+        qtip_lock(pContext);
 #endif
-        *pSize      = queue_count_items(pContext);
+        *pSize      = qtip_count_items(pContext);
         void* pHead = pContext->front;
 
         for (size_t i = 0U; i < pContext->qty; i++)
@@ -275,16 +275,16 @@ queueStatus_t queue_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
         }
 
 #ifndef DISABLE_LOCK
-        queue_unlock(pContext);
+        qtip_unlock(pContext);
 #endif
     }
 
     return status;
 }
 
-queueStatus_t queue_purge(queueContext_t* pContext)
+qtipStatus_t qtip_purge(queueContext_t* pContext)
 {
-    queueStatus_t status = QUEUE_OK;
+    qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
@@ -294,10 +294,10 @@ queueStatus_t queue_purge(queueContext_t* pContext)
     status = CHECK_STATUS(status, IS_LOCKED(pContext));
 #endif
 
-    if (status == QUEUE_OK)
+    if (status == QTIP_STATUS_OK)
     {
 #ifndef DISABLE_LOCK
-        queue_lock(pContext);
+        qtip_lock(pContext);
 #endif
 
         pContext->qty = 0;
@@ -306,7 +306,7 @@ queueStatus_t queue_purge(queueContext_t* pContext)
         advance_front(pContext);
 
 #ifndef DISABLE_LOCK
-        queue_unlock(pContext);
+        qtip_unlock(pContext);
 #endif
     }
 

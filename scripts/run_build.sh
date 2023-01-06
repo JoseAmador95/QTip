@@ -11,7 +11,7 @@ mkdir -p $OUTDIR
 COMMAND="cmake"
 SRC="$(pwd)"
 BUILD="build"
-TARGET="queue"
+TARGET="qtip"
 
 echo "$COMMAND -S $SRC -B $BUILD -DCMAKE_C_COMPILER=$COMPILER"
 $COMMAND -S $SRC -B $BUILD -DCMAKE_C_COMPILER=$COMPILER &>> $LOG
