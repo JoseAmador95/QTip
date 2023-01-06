@@ -7,7 +7,7 @@
 
 typedef uint32_t type_t;
 
-queueContext_t context;
+qtipContext_t context;
 type_t queue[QUEUE_SIZE];
 type_t buffer[QUEUE_SIZE];
 

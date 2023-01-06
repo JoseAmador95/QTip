@@ -36,12 +36,12 @@
  * Private functions
  */
 
-static bool queue_needs_rollover(queueContext_t* pContext, void* pAddr)
+static bool queue_needs_rollover(qtipContext_t* pContext, void* pAddr)
 {
     return (void*) (pAddr + pContext->itemSize) > pContext->end;
 }
 
-static void advance_front(queueContext_t* pContext)
+static void advance_front(qtipContext_t* pContext)
 {
     if (qtip_is_empty(pContext))
     {
@@ -61,7 +61,7 @@ static void advance_front(queueContext_t* pContext)
     }
 }
 
-static void advance_rear(queueContext_t* pContext)
+static void advance_rear(qtipContext_t* pContext)
 {
     if (qtip_is_full(pContext) || qtip_is_empty(pContext))
     {
@@ -83,32 +83,32 @@ static void advance_rear(queueContext_t* pContext)
  * Extended API
  */
 
-REDUCED bool qtip_is_full(queueContext_t* pContext)
+REDUCED bool qtip_is_full(qtipContext_t* pContext)
 {
     return pContext->qty == pContext->size;
 }
 
-REDUCED bool qtip_is_empty(queueContext_t* pContext)
+REDUCED bool qtip_is_empty(qtipContext_t* pContext)
 {
     return pContext->qty == 0U;
 }
 
-REDUCED size_t qtip_count_items(queueContext_t* pContext)
+REDUCED size_t qtip_count_items(qtipContext_t* pContext)
 {
     return pContext->qty;
 }
 
-REDUCED bool qtip_is_locked(queueContext_t* pContext)
+REDUCED bool qtip_is_locked(qtipContext_t* pContext)
 {
     return pContext->locked;
 }
 
-REDUCED void qtip_lock(queueContext_t* pContext)
+REDUCED void qtip_lock(qtipContext_t* pContext)
 {
     pContext->locked = true;
 }
 
-REDUCED void qtip_unlock(queueContext_t* pContext)
+REDUCED void qtip_unlock(qtipContext_t* pContext)
 {
     pContext->locked = false;
 }
@@ -117,7 +117,7 @@ REDUCED void qtip_unlock(queueContext_t* pContext)
  * Public API (Reduced API)
  */
 
-qtipStatus_t qtip_init(queueContext_t* pContext, void* pBuffer, size_t size, size_t itemSize)
+qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, size_t size, size_t itemSize)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
@@ -153,7 +153,7 @@ qtipStatus_t qtip_init(queueContext_t* pContext, void* pBuffer, size_t size, siz
     return status;
 }
 
-qtipStatus_t qtip_put(queueContext_t* pContext, void* pElement)
+qtipStatus_t qtip_put(qtipContext_t* pContext, void* pElement)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
@@ -195,7 +195,7 @@ qtipStatus_t qtip_put(queueContext_t* pContext, void* pElement)
     return status;
 }
 
-qtipStatus_t qtip_pop(queueContext_t* pContext, void* pElement)
+qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pElement)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
@@ -238,7 +238,7 @@ qtipStatus_t qtip_pop(queueContext_t* pContext, void* pElement)
     return status;
 }
 
-qtipStatus_t qtip_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
+qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, size_t* pSize)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
@@ -282,7 +282,7 @@ qtipStatus_t qtip_peek(queueContext_t* pContext, void* pBuffer, size_t* pSize)
     return status;
 }
 
-qtipStatus_t qtip_purge(queueContext_t* pContext)
+qtipStatus_t qtip_purge(qtipContext_t* pContext)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
