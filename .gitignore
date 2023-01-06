@@ -56,3 +56,6 @@ build
 
 # CI artifacts
 artifacts
+
+# Doxygen
+docs/doxygen/out
