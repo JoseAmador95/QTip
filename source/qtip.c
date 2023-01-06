@@ -153,13 +153,13 @@ qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, size_t size, size
     return status;
 }
 
-qtipStatus_t qtip_put(qtipContext_t* pContext, void* pElement)
+qtipStatus_t qtip_put(qtipContext_t* pContext, void* pItem)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
-    status = CHECK_STATUS(status, CHECK_NULL_PRT(pElement));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pItem));
 #endif
 
 #ifndef DISABLE_LOCK
@@ -175,7 +175,7 @@ qtipStatus_t qtip_put(qtipContext_t* pContext, void* pElement)
 #endif
             advance_rear(pContext);
 
-            memcpy(pContext->rear, pElement, pContext->itemSize);
+            memcpy(pContext->rear, pItem, pContext->itemSize);
             pContext->qty++;
 
 #ifndef DISABLE_QUEUE_TELEMETRY
@@ -195,13 +195,13 @@ qtipStatus_t qtip_put(qtipContext_t* pContext, void* pElement)
     return status;
 }
 
-qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pElement)
+qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
-    status = CHECK_STATUS(status, CHECK_NULL_PRT(pElement));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pItem));
 #endif
 
 #ifndef DISABLE_LOCK
@@ -215,7 +215,7 @@ qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pElement)
 #ifndef DISABLE_LOCK
             qtip_lock(pContext);
 #endif
-            memcpy(pElement, pContext->front, pContext->itemSize);
+            memcpy(pItem, pContext->front, pContext->itemSize);
             memset(pContext->front, 0U, pContext->itemSize);
             pContext->qty--;
 

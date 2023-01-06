@@ -64,21 +64,21 @@ qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, size_t size, size_
 
 /**
  * @brief     Put an item in a queue
- * @details   Copies the value of pElement to the back of the queue.
+ * @details   Copies the value of pItem to the back of the queue.
  * @param[in] pContext Pointer to queue context
- * @param[in] pElement Pointer to item to store in the queue
+ * @param[in] pItem Pointer to item to store in the queue
  * @returns   Operation status
  */
-qtipStatus_t qtip_put(qtipContext_t* pContext, void* pElement);
+qtipStatus_t qtip_put(qtipContext_t* pContext, void* pItem);
 
 /**
  * @brief     Extract the next item from the queue
- * @details   Pulls and removes the the next item in the queue and puts it into pElement.
+ * @details   Pulls and removes the the next item in the queue and puts it into pItem.
  * @param[in] pContext Pointer to queue context
- * @param[in] pElement Pointer to item to store in the queue
+ * @param[in] pItem Pointer to item to store in the queue
  * @returns   Operation status
  */
-qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pElement);
+qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem);
 
 /**
  * @brief     Copies every element of the queue into a buffer
