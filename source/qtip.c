@@ -1,3 +1,10 @@
+/**
+ * @file qfile.c
+ * @brief API for queues
+ * @author Jose Amador
+ * @copyright MIT License
+ */
+
 #include "qtip.h"
 
 #include <stddef.h>

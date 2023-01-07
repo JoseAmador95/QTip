@@ -1,3 +1,15 @@
+/**
+ * @file qtip.h
+ * @brief API for queues
+ * @author Jose Amador
+ * @copyright MIT License
+ *
+ * @defgroup API
+ * @addtogroup API
+ * @{
+ * @brief Public API
+ */
+
 #ifndef QTIP_H
 #define QTIP_H
 
@@ -156,3 +168,7 @@ void qtip_unlock(qtipContext_t* pContext);
 #endif
 #endif
 #endif
+
+/**
+ * @}
+ */

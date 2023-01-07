@@ -1,3 +1,10 @@
+/**
+ * @file test_qtip.c
+ * @brief Unit tests for QTip API
+ * @author Jose Amador
+ * @copyright MIT License
+ */
+
 #include "qtip.h"
 #include "unity.h"
 
