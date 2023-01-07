@@ -84,22 +84,22 @@ qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, size_t size, size_
 qtipStatus_t qtip_put(qtipContext_t* pContext, void* pItem);
 
 /**
- * @brief     Extract the next item from the queue
- * @details   Pulls and removes the the next item in the queue and puts it into pItem.
- * @param[in] pContext Pointer to queue context
- * @param[in] pItem Pointer to item to store in the queue
- * @returns   Operation status
+ * @brief      Extract the next item from the queue
+ * @details    Pulls and removes the the next item in the queue and puts it into pItem.
+ * @param[in]  pContext Pointer to queue context
+ * @param[out] pItem Pointer to item to store in the queue
+ * @returns    Operation status
  */
 qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem);
 
 /**
- * @brief     Copies every element of the queue into a buffer
- * @details   Reads every item in the queue and stores a copy in pBuffer
- * @param[in] pContext Pointer to queue context
- * @param[in] pBuffer  Pointer to buffer to store the copy of the queue
- * @param[in] pSize    Pointer to variable to store the number of items in the queue
- * @note      pBuffer should be size * itemSize bytes
- * @returns   Operation status
+ * @brief      Copies every element of the queue into a buffer
+ * @details    Reads every item in the queue and stores a copy in pBuffer
+ * @param[in]  pContext Pointer to queue context
+ * @param[in]  pBuffer  Pointer to buffer to store the copy of the queue
+ * @param[out] pSize    Pointer to variable to store the number of items in the queue
+ * @note       pBuffer should be size * itemSize bytes
+ * @returns    Operation status
  */
 qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, size_t* pSize);
 
