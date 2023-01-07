@@ -1,5 +1,5 @@
 /**
- * @file qfile.c
+ * @file qtip.c
  * @brief API for queues
  * @author Jose Amador
  * @copyright MIT License
