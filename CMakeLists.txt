@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22.1)
-project(qlib VERSION 0.0.0)
+project(qtip VERSION 0.0.0)
 enable_language(C CXX)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
