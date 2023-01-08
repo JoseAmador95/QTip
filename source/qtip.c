@@ -124,7 +124,7 @@ static void advance_rear(qtipContext_t* pContext)
  * Public API
  */
 
-qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, qtipSize_t maxItems, qtipSize_t itemSize)
+qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, qtipSize_t maxItems, size_t itemSize)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
