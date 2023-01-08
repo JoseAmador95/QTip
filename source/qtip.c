@@ -58,7 +58,7 @@ static inline bool is_full(qtipContext_t* pContext)
     return pContext->qty == pContext->size;
 }
 
-static inline size_t count_items(qtipContext_t* pContext)
+static inline qtip_size count_items(qtipContext_t* pContext)
 {
     return pContext->qty;
 }
@@ -124,7 +124,7 @@ static void advance_rear(qtipContext_t* pContext)
  * Public API
  */
 
-qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, size_t size, size_t itemSize)
+qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, qtip_size size, qtip_size itemSize)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
@@ -245,7 +245,7 @@ qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem)
     return status;
 }
 
-qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, size_t* pSize)
+qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, qtip_size* pSize)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
@@ -267,7 +267,7 @@ qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, size_t* pSize)
         *pSize      = count_items(pContext);
         void* pHead = pContext->front;
 
-        for (size_t i = 0U; i < pContext->qty; i++)
+        for (qtip_size i = 0U; i < pContext->qty; i++)
         {
             memcpy(pBuffer + i * pContext->itemSize, pHead, pContext->itemSize);
 
@@ -477,7 +477,7 @@ qtipStatus_t qtip_is_empty(qtipContext_t* pContext)
     return status;
 }
 
-qtipStatus_t qtip_count_items(qtipContext_t* pContext, size_t* pQty)
+qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtip_size* pQty)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
