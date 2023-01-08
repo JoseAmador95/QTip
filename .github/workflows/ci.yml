@@ -58,3 +58,34 @@ jobs:
 
     - name: Check Results
       run: ./scripts/check_results.sh
+
+  pages:
+    runs-on: ubuntu-latest
+    needs: tests
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Documentation
+        run: ./scripts/run_docs.sh
+        continue-on-error: true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'build/doxygen/html'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
