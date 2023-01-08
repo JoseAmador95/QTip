@@ -138,7 +138,8 @@ qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem);
 /**
  * @brief     Checks whether the queue is full
  * @param[in] pContext Pointer to queue context
- * @note      This function is part of the extended API
+ * @note      This function is part of the extended API.
+ *            It will not be available if the REDUCED_API macro is defined.
  * @returns   True if full
  */
 bool qtip_is_full(qtipContext_t* pContext);
@@ -155,6 +156,7 @@ bool qtip_is_empty(qtipContext_t* pContext);
  * @brief     Gets the number of items in the queue
  * @param[in] pContext Pointer to queue context
  * @note      This function is part of the extended API
+ *            It will not be available if the REDUCED_API macro is defined.
  * @returns   Number of items in the queue
  */
 size_t qtip_count_items(qtipContext_t* pContext);
@@ -165,6 +167,7 @@ size_t qtip_count_items(qtipContext_t* pContext);
  * @details   Deletes the items from the queue and sets the queue in a known state.
  * @param[in] pContext Pointer to queue context
  * @note      This function is part of the extended API
+ *            It will not be available if the REDUCED_API macro is defined.
  * @returns   Operation status
  */
 bool qtip_is_locked(qtipContext_t* pContext);
@@ -173,6 +176,7 @@ bool qtip_is_locked(qtipContext_t* pContext);
  * @brief     Locks the queue
  * @param[in] pContext Pointer to queue context
  * @note      This function is part of the extended API
+ *            It will not be available if the REDUCED_API macro is defined.
  */
 void qtip_lock(qtipContext_t* pContext);
 
@@ -180,6 +184,7 @@ void qtip_lock(qtipContext_t* pContext);
  * @brief     Unlocks the queue
  * @param[in] pContext Pointer to queue context
  * @note      This function is part of the extended API
+ *            It will not be available if the REDUCED_API macro is defined.
  */
 void qtip_unlock(qtipContext_t* pContext);
 
