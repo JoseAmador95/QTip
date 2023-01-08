@@ -8,15 +8,20 @@ file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/source/*.c)
 add_library(${PROJECT_NAME} STATIC ${SRC})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
-if(DEFINED QTIP_REDUCED_API)
+option(QTIP_REDUCED_API "Reduce the public API to save memory" OFF)
+option(QTIP_DISABLE_LOCK "Disable the queue lock" OFF)
+option(QTIP_DISABLE_TELEMETRY "Disable queue telemetry to save memory" OFF)
+set(QTIP_SIZE_TYPE size_t CACHE STRING "Type of the max number of items in the queue")
+
+if(QTIP_REDUCED_API)
     target_compile_definitions(${PROJECT_NAME} PUBLIC REDUCED_API)
 endif()
 
-if(DEFINED QTIP_DISABLE_LOCK)
+if(QTIP_DISABLE_LOCK)
     target_compile_definitions(${PROJECT_NAME} PUBLIC DISABLE_LOCK)
 endif()
 
-if(DEFINED QTIP_DISABLE_TELEMETRY)
+if(QTIP_DISABLE_TELEMETRY)
     target_compile_definitions(${PROJECT_NAME} PUBLIC DISABLE_TELEMETRY)
 endif()
 
