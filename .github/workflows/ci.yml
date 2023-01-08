@@ -40,11 +40,21 @@ jobs:
       run: ./scripts/run_ccn.sh
       continue-on-error: true
 
+    - name: Documentation
+      run: ./scripts/run_docs.sh
+      continue-on-error: true
+
     - name: Publish Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: artifacts
         path: ./artifacts
+
+    - name: Publish Documentation
+      uses: actions/upload-artifact@v3
+      with:
+        name: github-pages
+        path: ./build/doxygen/html
 
     - name: Check Results
       run: ./scripts/check_results.sh
