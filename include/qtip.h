@@ -111,6 +111,24 @@ qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, size_t* pSize);
  */
 qtipStatus_t qtip_purge(qtipContext_t* pContext);
 
+/**
+ * @brief      Gets the item at the front of the queue
+ * @details    The item at the front of the queue is fetched, but not removed.
+ * @param[in]  pContext Pointer to queue context
+ * @param[out] pItem Pointer to the item at the front of the queue
+ * @returns    Operation status
+ */
+qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem);
+
+/**
+ * @brief      Gets the item at the rear of the queue
+ * @details    The item at the rear of the queue is fetched, but not removed.
+ * @param[in]  pContext Pointer to queue context
+ * @param[out] pItem Pointer to the item at the rear of the queue
+ * @returns    Operation status
+ */
+qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem);
+
 /*
  * Extended API
  */

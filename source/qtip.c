@@ -381,3 +381,73 @@ qtipStatus_t qtip_purge(qtipContext_t* pContext)
 
     return status;
 }
+
+qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem)
+{
+    qtipStatus_t status = QTIP_STATUS_OK;
+
+#ifndef SKIP_ARG_CHECK
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pItem));
+#endif
+
+#ifndef DISABLE_LOCK
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    if (status == QTIP_STATUS_OK)
+    {
+        if (!qtip_is_empty(pContext))
+        {
+#ifndef DISABLE_LOCK
+            qtip_lock(pContext);
+#endif
+            memcpy(pItem, pContext->front, pContext->itemSize);
+
+#ifndef DISABLE_LOCK
+            qtip_unlock(pContext);
+#endif
+        }
+        else
+        {
+            status = QTIP_STATUS_EMPTY;
+        }
+    }
+
+    return status;
+}
+
+qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem)
+{
+    qtipStatus_t status = QTIP_STATUS_OK;
+
+#ifndef SKIP_ARG_CHECK
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pItem));
+#endif
+
+#ifndef DISABLE_LOCK
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    if (status == QTIP_STATUS_OK)
+    {
+        if (!qtip_is_empty(pContext))
+        {
+#ifndef DISABLE_LOCK
+            qtip_lock(pContext);
+#endif
+            memcpy(pItem, pContext->rear, pContext->itemSize);
+
+#ifndef DISABLE_LOCK
+            qtip_unlock(pContext);
+#endif
+        }
+        else
+        {
+            status = QTIP_STATUS_EMPTY;
+        }
+    }
+
+    return status;
+}
