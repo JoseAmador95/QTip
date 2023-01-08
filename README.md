@@ -2,6 +2,8 @@
 
 QTip is a simple general-purpose queue library for C.
 
+Check the API Documentation on [Github Pages](https://joseamador95.github.io/QTip/).
+
 ## Description
 
 QTip uses a circular buffer to store the queue's items. The memory area used as circular buffer is given by the user, and may exist in either heap or stack. The QTip API does not allocate memory in the heap.
