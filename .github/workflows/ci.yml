@@ -18,6 +18,10 @@ jobs:
       credentials:
         username: ${{ secrets.DOCKER_HUB_USER }}
         password: ${{ secrets.DOCKER_HUB_PASS }}
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
     - uses: actions/checkout@v3
@@ -50,42 +54,17 @@ jobs:
         name: artifacts
         path: ./artifacts
 
-    - name: Publish Documentation
-      uses: actions/upload-artifact@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
       with:
-        name: github-pages
-        path: ./build/doxygen/html
+        path: 'build/doxygen/html'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
 
     - name: Check Results
       run: ./scripts/check_results.sh
-
-  pages:
-    runs-on: ubuntu-latest
-    needs: tests
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Documentation
-        run: ./scripts/run_docs.sh
-        continue-on-error: true
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: 'build/doxygen/html'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
