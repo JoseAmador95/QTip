@@ -56,13 +56,13 @@ typedef enum
  */
 typedef struct
 {
-    qtipSize_t size; //!< Number of items allowed in the queue
-    qtipSize_t qty;  //!< Current number of items in the queue
-    void* start;     //!< Pointer to the start of the queue
-    void* end;       //!< Pointer to the end of the queue
-    void* front;     //!< Pointer to the front of the queue
-    void* rear;      //!< Pointer to the rear of the queue
-    size_t itemSize; //!< Size of each item in the queue
+    qtipSize_t maxItems; //!< Number of items allowed in the queue
+    qtipSize_t qty;      //!< Current number of items in the queue
+    void* start;         //!< Pointer to the start of the queue
+    void* end;           //!< Pointer to the end of the queue
+    void* front;         //!< Pointer to the front of the queue
+    void* rear;          //!< Pointer to the rear of the queue
+    size_t itemSize;     //!< Size of each item in the queue
 #ifndef DISABLE_LOCK
     bool locked; //!< Lock status
 #endif
@@ -81,12 +81,12 @@ typedef struct
  * @details   Initializes the queue context struct with default values.
  * @param[in] pContext Pointer to queue context
  * @param[in] pQueue   Pointer to queue in memory.
- * @param[in] size     Maximum number of items allowed in the queue
+ * @param[in] maxItems Maximum number of items allowed in the queue
  * @param[in] itemSize Size of the item to store in the queue
- * @note      pQueue must be at least size * itemSize bytes
+ * @note      pQueue must be at least maxItems * itemSize bytes
  * @returns   Operation status
  */
-qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, qtipSize_t size, qtipSize_t itemSize);
+qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, qtipSize_t maxItems, qtipSize_t itemSize);
 
 /**
  * @brief     Put an item in a queue
@@ -112,7 +112,7 @@ qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem);
  * @param[in]  pContext Pointer to queue context
  * @param[in]  pBuffer  Pointer to buffer to store the copy of the queue
  * @param[out] pSize    Pointer to variable to store the number of items in the queue
- * @note       pBuffer should be size * itemSize bytes
+ * @note       pBuffer should be maxItems * itemSize bytes
  * @returns    Operation status
  */
 qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, qtipSize_t* pSize);

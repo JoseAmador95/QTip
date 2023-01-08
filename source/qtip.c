@@ -55,7 +55,7 @@ static inline bool is_empty(qtipContext_t* pContext)
 
 static inline bool is_full(qtipContext_t* pContext)
 {
-    return pContext->qty == pContext->size;
+    return pContext->qty == pContext->maxItems;
 }
 
 static inline qtipSize_t count_items(qtipContext_t* pContext)
@@ -124,14 +124,14 @@ static void advance_rear(qtipContext_t* pContext)
  * Public API
  */
 
-qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, qtipSize_t size, qtipSize_t itemSize)
+qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, qtipSize_t maxItems, qtipSize_t itemSize)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pBuffer));
-    status = CHECK_STATUS(status, (size > 0U) ? QTIP_STATUS_OK : QTIP_STATUS_INVALID_SIZE);
+    status = CHECK_STATUS(status, (maxItems > 0U) ? QTIP_STATUS_OK : QTIP_STATUS_INVALID_SIZE);
     status = CHECK_STATUS(status, (itemSize > 0U) ? QTIP_STATUS_OK : QTIP_STATUS_INVALID_SIZE);
 #endif
 
@@ -142,9 +142,9 @@ qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, qtipSize_t size, 
     if (status == QTIP_STATUS_OK)
     {
         pContext->itemSize = itemSize;
-        pContext->size     = size;
+        pContext->maxItems = maxItems;
         pContext->start    = pBuffer;
-        pContext->end      = pContext->start + (pContext->size - 1U) * pContext->itemSize;
+        pContext->end      = pContext->start + (pContext->maxItems - 1U) * pContext->itemSize;
         pContext->front    = pContext->start;
         pContext->rear     = pContext->start;
         pContext->qty      = 0U;
@@ -308,7 +308,7 @@ qtipStatus_t qtip_purge(qtipContext_t* pContext)
 #endif
 
         pContext->qty = 0;
-        memset(pContext->start, 0U, pContext->size * pContext->itemSize);
+        memset(pContext->start, 0U, pContext->maxItems * pContext->itemSize);
         advance_rear(pContext);
         advance_front(pContext);
 
