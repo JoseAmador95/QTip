@@ -129,64 +129,51 @@ qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem);
  */
 qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem);
 
-/*
- * Extended API
- */
-
-#ifndef REDUCED_API
-
 /**
  * @brief     Checks whether the queue is full
  * @param[in] pContext Pointer to queue context
- * @note      This function is part of the extended API.
- *            It will not be available if the REDUCED_API macro is defined.
- * @returns   True if full
+ * @returns   Operation status
  */
-bool qtip_is_full(qtipContext_t* pContext);
+qtipStatus_t qtip_is_full(qtipContext_t* pContext);
 
 /**
  * @brief     Checks whether the queue is empty
  * @param[in] pContext Pointer to queue context
  * @note      This function is part of the extended API
- * @returns   True if empty
+ * @returns   Operation status
  */
-bool qtip_is_empty(qtipContext_t* pContext);
+qtipStatus_t qtip_is_empty(qtipContext_t* pContext);
 
 /**
- * @brief     Gets the number of items in the queue
- * @param[in] pContext Pointer to queue context
- * @note      This function is part of the extended API
- *            It will not be available if the REDUCED_API macro is defined.
- * @returns   Number of items in the queue
+ * @brief      Gets the number of items in the queue
+ * @param[in]  pContext Pointer to queue context
+ * @param[out] pQty Pointer to the variable to hold the result
+ * @returns    Operation status
  */
-size_t qtip_count_items(qtipContext_t* pContext);
+qtipStatus_t qtip_count_items(qtipContext_t* pContext, size_t* pQty);
 
 #ifndef DISABLE_LOCK
 /**
  * @brief     Checks whether the queue is locked
  * @details   Deletes the items from the queue and sets the queue in a known state.
  * @param[in] pContext Pointer to queue context
- * @note      This function is part of the extended API
- *            It will not be available if the REDUCED_API macro is defined.
  * @returns   Operation status
  */
-bool qtip_is_locked(qtipContext_t* pContext);
+qtipStatus_t qtip_is_locked(qtipContext_t* pContext);
 
 /**
  * @brief     Locks the queue
  * @param[in] pContext Pointer to queue context
- * @note      This function is part of the extended API
- *            It will not be available if the REDUCED_API macro is defined.
+ * @returns   Operation status
  */
-void qtip_lock(qtipContext_t* pContext);
+qtipStatus_t qtip_lock(qtipContext_t* pContext);
 
 /**
  * @brief     Unlocks the queue
  * @param[in] pContext Pointer to queue context
- * @note      This function is part of the extended API
- *            It will not be available if the REDUCED_API macro is defined.
+ * @returns   Operation status
  */
-void qtip_unlock(qtipContext_t* pContext);
+qtipStatus_t qtip_unlock(qtipContext_t* pContext);
 
 #endif
 #endif
