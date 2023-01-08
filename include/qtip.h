@@ -59,7 +59,7 @@ typedef struct
 } qtipContext_t;
 
 /*
- * Public API (Reduced API)
+ * Public API
  */
 
 /**
@@ -129,6 +129,8 @@ qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem);
  */
 qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem);
 
+#ifndef REDUCED_API
+
 /**
  * @brief     Checks whether the queue is full
  * @param[in] pContext Pointer to queue context
@@ -152,7 +154,10 @@ qtipStatus_t qtip_is_empty(qtipContext_t* pContext);
  */
 qtipStatus_t qtip_count_items(qtipContext_t* pContext, size_t* pQty);
 
+#endif // REDUCED_API
+
 #ifndef DISABLE_LOCK
+
 /**
  * @brief     Checks whether the queue is locked
  * @details   Deletes the items from the queue and sets the queue in a known state.
@@ -175,7 +180,8 @@ qtipStatus_t qtip_lock(qtipContext_t* pContext);
  */
 qtipStatus_t qtip_unlock(qtipContext_t* pContext);
 
-#endif
+#endif // DISABLE_LOCK
+
 #ifndef DISABLE_QUEUE_TELEMETRY
 
 /**
@@ -195,8 +201,10 @@ qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty);
  * @returns    Operation status
  */
 qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pQty);
-#endif
-#endif
+
+#endif // DISABLE_QUEUE_TELEMETRY
+
+#endif // QTIP_H
 
 /**
  * @}
