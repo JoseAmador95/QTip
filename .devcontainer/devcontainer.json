@@ -1,8 +1,6 @@
 {
-    "name": "xipc-dev",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
+    "name": "qtip-devcontainer",
+    "image": "docker.io/joseamador95/xochi-dev",
     "customizations": {
         "vscode": {
             "extensions": [
