@@ -28,7 +28,7 @@
 /*
  * Public typedefs
  */
-typedef SIZE_TYPE qtip_size; //!< Number of items in queue
+typedef SIZE_TYPE qtipSize_t; //!< Number of items in queue
 
 /*
  * Public Enum
@@ -56,8 +56,8 @@ typedef enum
  */
 typedef struct
 {
-    qtip_size size;  //!< Number of items allowed in the queue
-    qtip_size qty;   //!< Current number of items in the queue
+    qtipSize_t size; //!< Number of items allowed in the queue
+    qtipSize_t qty;  //!< Current number of items in the queue
     void* start;     //!< Pointer to the start of the queue
     void* end;       //!< Pointer to the end of the queue
     void* front;     //!< Pointer to the front of the queue
@@ -86,7 +86,7 @@ typedef struct
  * @note      pQueue must be at least size * itemSize bytes
  * @returns   Operation status
  */
-qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, qtip_size size, qtip_size itemSize);
+qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, qtipSize_t size, qtipSize_t itemSize);
 
 /**
  * @brief     Put an item in a queue
@@ -115,7 +115,7 @@ qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem);
  * @note       pBuffer should be size * itemSize bytes
  * @returns    Operation status
  */
-qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, qtip_size* pSize);
+qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, qtipSize_t* pSize);
 
 /**
  * @brief     Removes all the items from the queue
@@ -166,7 +166,7 @@ qtipStatus_t qtip_is_empty(qtipContext_t* pContext);
  * @param[out] pQty Pointer to the variable to hold the result
  * @returns    Operation status
  */
-qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtip_size* pQty);
+qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pQty);
 
 #endif // REDUCED_API
 
