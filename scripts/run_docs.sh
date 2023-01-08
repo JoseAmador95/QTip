@@ -6,7 +6,7 @@ RESULT_FILE="$ARTIFACTS/results.txt"
 LOG="$OUTDIR/$NAME.log"
 DOCS="build/doxygen"
 
-mkdir -p $OUTDIR
+mkdir -p $OUTDIR $DOCS
 
 COMMAND="doxygen"
 
