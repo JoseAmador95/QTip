@@ -86,7 +86,7 @@ typedef struct
  * @note      pQueue must be at least maxItems * itemSize bytes
  * @returns   Operation status
  */
-qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, qtipSize_t maxItems, qtipSize_t itemSize);
+qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, qtipSize_t maxItems, size_t itemSize);
 
 /**
  * @brief     Put an item in a queue
