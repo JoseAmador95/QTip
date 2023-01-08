@@ -4,7 +4,7 @@
  * @author Jose Amador
  * @copyright MIT License
  *
- * @defgroup API
+ * @defgroup API Public API
  * @addtogroup API
  * @{
  * @brief Public API
