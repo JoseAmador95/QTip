@@ -176,6 +176,25 @@ qtipStatus_t qtip_lock(qtipContext_t* pContext);
 qtipStatus_t qtip_unlock(qtipContext_t* pContext);
 
 #endif
+#ifndef DISABLE_QUEUE_TELEMETRY
+
+/**
+ * @brief      Get number of items inserted in the queue
+ * @details    The result considers the all-time number of inserted items.
+ * @param[in]  pContext Pointer to queue context
+ * @param[out] pQty Pointer to variable to hold the result
+ * @returns    Operation status
+ */
+qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty);
+
+/**
+ * @brief      Get number of processed items in the queue
+ * @details    The result considers the all-time number of popped items.
+ * @param[in]  pContext Pointer to queue context
+ * @param[out] pQty Pointer to variable to hold the result
+ * @returns    Operation status
+ */
+qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pQty);
 #endif
 #endif
 

@@ -483,3 +483,39 @@ qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem)
 
     return status;
 }
+
+#ifndef DISABLE_QUEUE_TELEMETRY
+
+qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty)
+{
+    qtipStatus_t status = QTIP_STATUS_OK;
+
+#ifndef SKIP_ARG_CHECK
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+#endif
+
+    if (status == QTIP_STATUS_OK)
+    {
+        *pQty = pContext->total;
+    }
+
+    return status;
+}
+
+qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pQty)
+{
+    qtipStatus_t status = QTIP_STATUS_OK;
+
+#ifndef SKIP_ARG_CHECK
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+#endif
+
+    if (status == QTIP_STATUS_OK)
+    {
+        *pQty = pContext->processed;
+    }
+
+    return status;
+}
+
+#endif
