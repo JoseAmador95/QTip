@@ -92,32 +92,94 @@ static void advance_rear(qtipContext_t* pContext)
 
 REDUCED bool qtip_is_full(qtipContext_t* pContext)
 {
-    return pContext->qty == pContext->size;
+    bool isFull = false;
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    if (pContext != NULL)
+    {
+#endif
+
+        isFull = pContext->qty == pContext->size;
+
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    }
+#endif
+    return isFull;
 }
 
 REDUCED bool qtip_is_empty(qtipContext_t* pContext)
 {
-    return pContext->qty == 0U;
+    bool isEmpty = false;
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    if (pContext != NULL)
+    {
+#endif
+
+        isEmpty = pContext->qty == 0U;
+
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    }
+#endif
+    return isEmpty;
 }
 
 REDUCED size_t qtip_count_items(qtipContext_t* pContext)
 {
-    return pContext->qty;
+    size_t count = 0U;
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    if (pContext != NULL)
+    {
+#endif
+
+        count = pContext->qty;
+
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    }
+#endif
+    return count;
 }
 
 REDUCED bool qtip_is_locked(qtipContext_t* pContext)
 {
-    return pContext->locked;
+    bool locked = true;
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    if (pContext != NULL)
+    {
+#endif
+
+        locked = pContext->locked;
+
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    }
+#endif
+    return locked;
 }
 
 REDUCED void qtip_lock(qtipContext_t* pContext)
 {
-    pContext->locked = true;
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    if (pContext != NULL)
+    {
+#endif
+
+        pContext->locked = true;
+
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    }
+#endif
 }
 
 REDUCED void qtip_unlock(qtipContext_t* pContext)
 {
-    pContext->locked = false;
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    if (pContext != NULL)
+    {
+#endif
+
+        pContext->locked = false;
+
+#if !defined(REDUCED_API) && !defined(SKIP_ARG_CHECK)
+    }
+#endif
 }
 
 /*
