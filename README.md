@@ -2,7 +2,8 @@
 
 QTip is a simple general-purpose queue library for C.
 
-Check the API Documentation on [Github Pages](https://joseamador95.github.io/QTip/).
+* [Repository](https://github.com/JoseAmador95/QTip).
+* [Documentation](https://joseamador95.github.io/QTip/).
 
 ## Description
 
