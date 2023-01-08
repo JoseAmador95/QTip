@@ -66,7 +66,7 @@ typedef struct
 #ifndef DISABLE_LOCK
     bool locked; //!< Lock status
 #endif
-#ifndef DISABLE_QUEUE_TELEMETRY
+#ifndef DISABLE_TELEMETRY
     size_t processed; //!< Number of items removed from the queue
     size_t total;     //!< Number of items introduced to the queue
 #endif
@@ -196,7 +196,7 @@ qtipStatus_t qtip_unlock(qtipContext_t* pContext);
 
 #endif // DISABLE_LOCK
 
-#ifndef DISABLE_QUEUE_TELEMETRY
+#ifndef DISABLE_TELEMETRY
 
 /**
  * @brief      Get number of items inserted in the queue
@@ -216,7 +216,7 @@ qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty);
  */
 qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pQty);
 
-#endif // DISABLE_QUEUE_TELEMETRY
+#endif // DISABLE_TELEMETRY
 
 #endif // QTIP_H
 

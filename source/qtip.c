@@ -151,7 +151,7 @@ qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, qtip_size size, q
 #ifndef DISABLE_LOCK
         pContext->locked = false;
 #endif
-#ifndef DISABLE_QUEUE_TELEMETRY
+#ifndef DISABLE_TELEMETRY
         pContext->total     = 0U;
         pContext->processed = 0U;
 #endif
@@ -185,7 +185,7 @@ qtipStatus_t qtip_put(qtipContext_t* pContext, void* pItem)
             memcpy(pContext->rear, pItem, pContext->itemSize);
             pContext->qty++;
 
-#ifndef DISABLE_QUEUE_TELEMETRY
+#ifndef DISABLE_TELEMETRY
             pContext->total++;
 #endif
 
@@ -228,7 +228,7 @@ qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem)
 
             advance_front(pContext);
 
-#ifndef DISABLE_QUEUE_TELEMETRY
+#ifndef DISABLE_TELEMETRY
             pContext->processed++;
 #endif
 
@@ -495,7 +495,7 @@ qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtip_size* pQty)
 
 #endif // REDUCED_API
 
-#ifndef DISABLE_QUEUE_TELEMETRY
+#ifndef DISABLE_TELEMETRY
 
 qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty)
 {
@@ -529,4 +529,4 @@ qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pQty)
     return status;
 }
 
-#endif // DISABLE_QUEUE_TELEMETRY
+#endif // DISABLE_TELEMETRY

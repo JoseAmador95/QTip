@@ -24,7 +24,7 @@ The integrated telemetry helps keeping track of the number of enqueued items and
 The following preprocessor macros can be defined to disable features in order to save memory.
 
 * **DISABLE_LOCK**: Disables the locking mechanism.
-* **DISABLE_QUEUE_TELEMETRY**: Disables the queue telemetry.
+* **DISABLE_TELEMETRY**: Disables the queue telemetry.
 * **REDUCED_API**: Reduces the public API to save memory.
 * **SKIP_ARG_CHECK**: Skips checking the value of the API's arguments.
 
