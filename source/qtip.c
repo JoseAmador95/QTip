@@ -11,16 +11,6 @@
 #include <string.h>
 
 /*
- * Macro Magic
- */
-
-#ifndef REDUCED_API
-#define REDUCED
-#else
-#define REDUCED static inline
-#endif
-
-/*
  * Private defines
  */
 
@@ -43,7 +33,7 @@
  * Private functions
  */
 
-static bool needs_rollover(qtipContext_t* pContext, void* pAddr)
+static inline bool needs_rollover(qtipContext_t* pContext, void* pAddr)
 {
     return (void*) (pAddr + pContext->itemSize) > pContext->end;
 }
@@ -341,7 +331,7 @@ qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem)
             lock_queue(pContext);
 #endif
 
-            memcpy(pItem, pContext->front, pContext->itemSize);
+            memcpy(pItem, pContext->rear, pContext->itemSize);
 
 #ifndef DISABLE_LOCK
             unlock_queue(pContext);
@@ -377,7 +367,7 @@ qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem)
             lock_queue(pContext);
 #endif
 
-            memcpy(pItem, pContext->rear, pContext->itemSize);
+            memcpy(pItem, pContext->front, pContext->itemSize);
 
 #ifndef DISABLE_LOCK
             unlock_queue(pContext);
