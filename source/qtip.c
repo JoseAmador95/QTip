@@ -7,7 +7,6 @@
 
 #include "qtip.h"
 
-#include <stddef.h>
 #include <string.h>
 
 /*
