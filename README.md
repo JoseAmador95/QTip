@@ -28,6 +28,7 @@ The following preprocessor macros can be defined to disable features in order to
 * **DISABLE_TELEMETRY**: Disables the queue telemetry.
 * **REDUCED_API**: Reduces the public API to save memory.
 * **SKIP_ARG_CHECK**: Skips checking the value of the API's arguments.
+* **SIZE_TYPE**: Set the type of the max number of items in the queue.
 
 ## Examples
 
