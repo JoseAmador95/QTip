@@ -85,6 +85,16 @@ typedef struct
  * @param[in] itemSize Size of the item to store in the queue
  * @note      pQueue must be at least maxItems * itemSize bytes
  * @returns   Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | NA                              |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL              |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | `itemSize` or `maxItems` is `0` |
  */
 qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, qtipSize_t maxItems, size_t itemSize);
 
@@ -94,6 +104,16 @@ qtipStatus_t qtip_init(qtipContext_t* pContext, void* pQueue, qtipSize_t maxItem
  * @param[in] pContext Pointer to queue context
  * @param[in] pItem Pointer to item to store in the queue
  * @returns   Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                 |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` or `pItem` is NULL   |
+ *    | @ref QTIP_STATUS_FULL         | Queue is full                   |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_put(qtipContext_t* pContext, void* pItem);
 
@@ -103,6 +123,16 @@ qtipStatus_t qtip_put(qtipContext_t* pContext, void* pItem);
  * @param[in]  pContext Pointer to queue context
  * @param[out] pItem Pointer to item to store in the queue
  * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                 |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` or `pItem` is NULL   |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | Queue is empty                  |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem);
 
@@ -114,6 +144,16 @@ qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem);
  * @param[out] pSize    Pointer to variable to store the number of items in the queue
  * @note       pBuffer should be maxItems * itemSize bytes
  * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                                  |
+ *    | ----------------------------- | --------------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful                    |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                         |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext`, `pItem`, or `pSIze` is NULL |
+ *    | @ref QTIP_STATUS_FULL         | NA                                      |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                                      |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                                      |
  */
 qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, qtipSize_t* pSize);
 
@@ -122,6 +162,16 @@ qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, qtipSize_t* pSize
  * @details   Deletes the items from the queue and sets the queue in a known state.
  * @param[in] pContext Pointer to queue context
  * @returns   Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                                  |
+ *    | ----------------------------- | --------------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful                    |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                         |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL                      |
+ *    | @ref QTIP_STATUS_FULL         | NA                                      |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                                      |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                                      |
  */
 qtipStatus_t qtip_purge(qtipContext_t* pContext);
 
@@ -131,6 +181,16 @@ qtipStatus_t qtip_purge(qtipContext_t* pContext);
  * @param[in]  pContext Pointer to queue context
  * @param[out] pItem Pointer to the item at the front of the queue
  * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                                  |
+ *    | ----------------------------- | --------------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful                    |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                         |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` or `pItem` is NULL           |
+ *    | @ref QTIP_STATUS_FULL         | NA                                      |
+ *    | @ref QTIP_STATUS_EMPTY        | Queue is empty                          |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                                      |
  */
 qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem);
 
@@ -140,6 +200,16 @@ qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem);
  * @param[in]  pContext Pointer to queue context
  * @param[out] pItem Pointer to the item at the rear of the queue
  * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                                  |
+ *    | ----------------------------- | --------------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful                    |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                         |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` or `pItem` is NULL           |
+ *    | @ref QTIP_STATUS_FULL         | NA                                      |
+ *    | @ref QTIP_STATUS_EMPTY        | Queue is empty                          |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                                      |
  */
 qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem);
 
@@ -149,6 +219,16 @@ qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem);
  * @brief     Checks whether the queue is full
  * @param[in] pContext Pointer to queue context
  * @returns   Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Queue is not full               |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                 |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL              |
+ *    | @ref QTIP_STATUS_FULL         | Queue is full                   |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_is_full(qtipContext_t* pContext);
 
@@ -157,6 +237,16 @@ qtipStatus_t qtip_is_full(qtipContext_t* pContext);
  * @param[in] pContext Pointer to queue context
  * @note      This function is part of the extended API
  * @returns   Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Queue is not empty              |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                 |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL              |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | Queue is empty                  |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_is_empty(qtipContext_t* pContext);
 
@@ -165,6 +255,16 @@ qtipStatus_t qtip_is_empty(qtipContext_t* pContext);
  * @param[in]  pContext Pointer to queue context
  * @param[out] pQty Pointer to the variable to hold the result
  * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | NA                              |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL              |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pQty);
 
@@ -177,6 +277,16 @@ qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pQty);
  * @details   Deletes the items from the queue and sets the queue in a known state.
  * @param[in] pContext Pointer to queue context
  * @returns   Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Queue is not locked             |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                 |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL              |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_is_locked(qtipContext_t* pContext);
 
@@ -184,6 +294,16 @@ qtipStatus_t qtip_is_locked(qtipContext_t* pContext);
  * @brief     Locks the queue
  * @param[in] pContext Pointer to queue context
  * @returns   Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | NA                              |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL              |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_lock(qtipContext_t* pContext);
 
@@ -191,6 +311,16 @@ qtipStatus_t qtip_lock(qtipContext_t* pContext);
  * @brief     Unlocks the queue
  * @param[in] pContext Pointer to queue context
  * @returns   Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | NA                              |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL              |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_unlock(qtipContext_t* pContext);
 
@@ -204,6 +334,16 @@ qtipStatus_t qtip_unlock(qtipContext_t* pContext);
  * @param[in]  pContext Pointer to queue context
  * @param[out] pQty Pointer to variable to hold the result
  * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | NA                              |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` or `pResult` is NULL |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty);
 
@@ -213,6 +353,16 @@ qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty);
  * @param[in]  pContext Pointer to queue context
  * @param[out] pQty Pointer to variable to hold the result
  * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | NA                              |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` or `pResult` is NULL |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
 qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pQty);
 
