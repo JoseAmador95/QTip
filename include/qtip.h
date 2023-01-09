@@ -253,7 +253,7 @@ qtipStatus_t qtip_is_empty(qtipContext_t* pContext);
 /**
  * @brief      Gets the number of items in the queue
  * @param[in]  pContext Pointer to queue context
- * @param[out] pQty Pointer to the variable to hold the result
+ * @param[out] pResult Pointer to the variable to hold the result
  * @returns    Operation status
  *
  * @details
@@ -266,7 +266,7 @@ qtipStatus_t qtip_is_empty(qtipContext_t* pContext);
  *    | @ref QTIP_STATUS_EMPTY        | NA                              |
  *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
-qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pQty);
+qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pResult);
 
 #endif // REDUCED_API
 
@@ -332,7 +332,7 @@ qtipStatus_t qtip_unlock(qtipContext_t* pContext);
  * @brief      Get number of items inserted in the queue
  * @details    The result considers the all-time number of inserted items.
  * @param[in]  pContext Pointer to queue context
- * @param[out] pQty Pointer to variable to hold the result
+ * @param[out] pResult  Pointer to variable to hold the result
  * @returns    Operation status
  *
  * @details
@@ -345,13 +345,13 @@ qtipStatus_t qtip_unlock(qtipContext_t* pContext);
  *    | @ref QTIP_STATUS_EMPTY        | NA                              |
  *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
-qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty);
+qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pResult);
 
 /**
  * @brief      Get number of processed items in the queue
  * @details    The result considers the all-time number of popped items.
  * @param[in]  pContext Pointer to queue context
- * @param[out] pQty Pointer to variable to hold the result
+ * @param[out] pResult  Pointer to variable to hold the result
  * @returns    Operation status
  *
  * @details
@@ -364,7 +364,7 @@ qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty);
  *    | @ref QTIP_STATUS_EMPTY        | NA                              |
  *    | @ref QTIP_STATUS_INVALID_SIZE | NA                              |
  */
-qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pQty);
+qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pResult);
 
 #endif // DISABLE_TELEMETRY
 

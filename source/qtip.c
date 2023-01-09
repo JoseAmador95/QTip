@@ -467,7 +467,7 @@ qtipStatus_t qtip_is_empty(qtipContext_t* pContext)
     return status;
 }
 
-qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pQty)
+qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pResult)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
@@ -477,7 +477,7 @@ qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pQty)
 
     if (status == QTIP_STATUS_OK)
     {
-        *pQty = count_items(pContext);
+        *pResult = count_items(pContext);
     }
 
     return status;
@@ -487,33 +487,35 @@ qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pQty)
 
 #ifndef DISABLE_TELEMETRY
 
-qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pQty)
+qtipStatus_t qtip_total_enqueued_items(qtipContext_t* pContext, size_t* pResult)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pResult));
 #endif
 
     if (status == QTIP_STATUS_OK)
     {
-        *pQty = pContext->total;
+        *pResult = pContext->total;
     }
 
     return status;
 }
 
-qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pQty)
+qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pResult)
 {
     qtipStatus_t status = QTIP_STATUS_OK;
 
 #ifndef SKIP_ARG_CHECK
     status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pResult));
 #endif
 
     if (status == QTIP_STATUS_OK)
     {
-        *pQty = pContext->processed;
+        *pResult = pContext->processed;
     }
 
     return status;
