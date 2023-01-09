@@ -181,7 +181,7 @@ void test_telemetry(void)
 
 void test_null_ptr(void) // NOLINT
 {
-    QTIP_ASSERT_NULL_PTR(qtip_init(NULL, NULL, NULL, NULL));
+    QTIP_ASSERT_NULL_PTR(qtip_init(NULL, NULL, 0U, 0U));
     QTIP_ASSERT_NULL_PTR(qtip_put(NULL, NULL));
     QTIP_ASSERT_NULL_PTR(qtip_pop(NULL, NULL));
     QTIP_ASSERT_NULL_PTR(qtip_peek(NULL, NULL, NULL));
