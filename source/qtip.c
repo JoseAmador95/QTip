@@ -124,7 +124,7 @@ static inline void unlock_queue(qtipContext_t* pContext)
     pContext->locked = false;
 }
 
-#endif
+#endif // DISABLE_LOCK
 
 static qtipSize_t move_index(qtipContext_t* pContext, qtipSize_t index)
 {
