@@ -73,9 +73,8 @@ typedef struct
     qtipSize_t maxItems; //!< Number of items allowed in the queue
     qtipSize_t qty;      //!< Current number of items in the queue
     void* start;         //!< Pointer to the start of the queue
-    void* end;           //!< Pointer to the end of the queue
-    void* front;         //!< Pointer to the front of the queue
-    void* rear;          //!< Pointer to the rear of the queue
+    qtipSize_t front;    //!< Pointer to the front of the queue
+    qtipSize_t rear;     //!< Pointer to the rear of the queue
     size_t itemSize;     //!< Size of each item in the queue
 #ifndef DISABLE_LOCK
     bool locked; //!< Lock status

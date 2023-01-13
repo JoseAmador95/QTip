@@ -32,9 +32,9 @@
  * Private functions
  */
 
-static inline bool needs_rollover(qtipContext_t* pContext, void* pAddr)
+static inline void* absolute_index_to_address(qtipContext_t* pContext, qtipSize_t index)
 {
-    return (void*) (pAddr + pContext->itemSize) > pContext->end;
+    return pContext->start + index * pContext->itemSize;
 }
 
 static inline bool is_empty(qtipContext_t* pContext)
@@ -50,6 +50,61 @@ static inline bool is_full(qtipContext_t* pContext)
 static inline qtipSize_t count_items(qtipContext_t* pContext)
 {
     return pContext->qty;
+}
+
+static inline void write_item_absolute(qtipContext_t* pContext, qtipSize_t index, void* pItem)
+{
+    memcpy(absolute_index_to_address(pContext, index), pItem, pContext->itemSize);
+}
+
+static inline void read_item_absolute(qtipContext_t* pContext, qtipSize_t index, void* pItem)
+{
+    memcpy(pItem, absolute_index_to_address(pContext, index), pContext->itemSize);
+}
+
+static inline void delete_item_absolute(qtipContext_t* pContext, qtipSize_t index)
+{
+    memset(absolute_index_to_address(pContext, index), 0U, pContext->itemSize);
+}
+
+static inline qtipSize_t relative_index_to_absolute(qtipContext_t* pContext, qtipSize_t index)
+{
+    return (pContext->front + index) % pContext->maxItems;
+}
+
+static inline void* relative_index_to_address(qtipContext_t* pContext, qtipSize_t index)
+{
+    return absolute_index_to_address(pContext, relative_index_to_absolute(pContext, index));
+}
+
+static inline void write_item_relative(qtipContext_t* pContext, qtipSize_t index, void* pItem)
+{
+    write_item_absolute(pContext, relative_index_to_absolute(pContext, index), pItem);
+}
+
+static inline void read_item_relative(qtipContext_t* pContext, qtipSize_t index, void* pItem)
+{
+    read_item_absolute(pContext, relative_index_to_absolute(pContext, index), pItem);
+}
+
+static inline void delete_item_relative(qtipContext_t* pContext, qtipSize_t index)
+{
+    delete_item_absolute(pContext, relative_index_to_absolute(pContext, index));
+}
+
+static inline void reset_queue(qtipContext_t* pContext)
+{
+    memset(pContext->start, 0U, pContext->itemSize * pContext->maxItems);
+}
+
+static inline qtipSize_t next_index_absolute(qtipContext_t* pContext, qtipSize_t index)
+{
+    return (index + 1U) % pContext->maxItems;
+}
+
+static inline qtipSize_t next_index_relative(qtipContext_t* pContext, qtipSize_t index)
+{
+    return next_index_absolute(pContext, relative_index_to_absolute(pContext, index));
 }
 
 #ifndef DISABLE_LOCK
@@ -71,24 +126,19 @@ static inline void unlock_queue(qtipContext_t* pContext)
 
 #endif
 
-static void advance_front(qtipContext_t* pContext)
+static qtipSize_t move_index(qtipContext_t* pContext, qtipSize_t index)
 {
+    qtipSize_t newHeadIndex = index;
     if (is_empty(pContext))
     {
-        // Move front and rear to default state
-        pContext->front = pContext->start;
-        pContext->rear  = pContext->start;
-    }
-    else if (needs_rollover(pContext, pContext->front))
-    {
-        // Rollover
-        pContext->front = pContext->start;
+        newHeadIndex = 0U;
     }
     else
     {
-        // Move to next element in the array
-        pContext->front += pContext->itemSize;
+        newHeadIndex = next_index_absolute(pContext, index);
     }
+
+    return newHeadIndex;
 }
 
 static void advance_rear(qtipContext_t* pContext)
@@ -133,9 +183,8 @@ qtipStatus_t qtip_init(qtipContext_t* pContext, void* pBuffer, qtipSize_t maxIte
         pContext->itemSize = itemSize;
         pContext->maxItems = maxItems;
         pContext->start    = pBuffer;
-        pContext->end      = pContext->start + (pContext->maxItems - 1U) * pContext->itemSize;
-        pContext->front    = pContext->start;
-        pContext->rear     = pContext->start;
+        pContext->front    = 0U;
+        pContext->rear     = 0U;
         pContext->qty      = 0U;
 #ifndef DISABLE_LOCK
         pContext->locked = false;
@@ -169,9 +218,9 @@ qtipStatus_t qtip_put(qtipContext_t* pContext, void* pItem)
 #ifndef DISABLE_LOCK
             lock_queue(pContext);
 #endif
-            advance_rear(pContext);
+            pContext->rear = move_index(pContext, pContext->rear);
 
-            memcpy(pContext->rear, pItem, pContext->itemSize);
+            write_item_absolute(pContext, pContext->rear, pItem);
             pContext->qty++;
 
 #ifndef DISABLE_TELEMETRY
@@ -211,11 +260,11 @@ qtipStatus_t qtip_pop(qtipContext_t* pContext, void* pItem)
 #ifndef DISABLE_LOCK
             lock_queue(pContext);
 #endif
-            memcpy(pItem, pContext->front, pContext->itemSize);
-            memset(pContext->front, 0U, pContext->itemSize);
+            read_item_absolute(pContext, pContext->front, pItem);
+            delete_item_absolute(pContext, pContext->front);
             pContext->qty--;
 
-            advance_front(pContext);
+            pContext->front = move_index(pContext, pContext->front);
 
 #ifndef DISABLE_TELEMETRY
             pContext->processed++;
@@ -253,21 +302,10 @@ qtipStatus_t qtip_peek(qtipContext_t* pContext, void* pBuffer, qtipSize_t* pSize
 #ifndef DISABLE_LOCK
         lock_queue(pContext);
 #endif
-        *pSize      = count_items(pContext);
-        void* pHead = pContext->front;
-
+        *pSize = count_items(pContext);
         for (qtipSize_t i = 0U; i < pContext->qty; i++)
         {
-            memcpy(pBuffer + i * pContext->itemSize, pHead, pContext->itemSize);
-
-            if (needs_rollover(pContext, pHead))
-            {
-                pHead = pContext->start;
-            }
-            else
-            {
-                pHead += pContext->itemSize;
-            }
+            read_item_relative(pContext, i, pBuffer + i * pContext->itemSize);
         }
 
 #ifndef DISABLE_LOCK
@@ -296,10 +334,10 @@ qtipStatus_t qtip_purge(qtipContext_t* pContext)
         lock_queue(pContext);
 #endif
 
-        pContext->qty = 0;
-        memset(pContext->start, 0U, pContext->maxItems * pContext->itemSize);
-        advance_rear(pContext);
-        advance_front(pContext);
+        reset_queue(pContext);
+        pContext->qty   = 0U;
+        pContext->front = move_index(pContext, pContext->front);
+        pContext->rear  = move_index(pContext, pContext->rear);
 
 #ifndef DISABLE_LOCK
         unlock_queue(pContext);
@@ -330,7 +368,7 @@ qtipStatus_t qtip_get_rear(qtipContext_t* pContext, void* pItem)
             lock_queue(pContext);
 #endif
 
-            memcpy(pItem, pContext->rear, pContext->itemSize);
+            read_item_absolute(pContext, pContext->rear, pItem);
 
 #ifndef DISABLE_LOCK
             unlock_queue(pContext);
@@ -366,7 +404,7 @@ qtipStatus_t qtip_get_front(qtipContext_t* pContext, void* pItem)
             lock_queue(pContext);
 #endif
 
-            memcpy(pItem, pContext->front, pContext->itemSize);
+            read_item_absolute(pContext, pContext->front, pItem);
 
 #ifndef DISABLE_LOCK
             unlock_queue(pContext);
