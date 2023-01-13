@@ -13,6 +13,20 @@
 #ifndef QTIP_H
 #define QTIP_H
 
+#ifdef __cplusplus
+// clang-format off
+#define QTIP_CPP_SUPPORT_START extern "C" {
+#define QTIP_CPP_SUPPORT_END }
+#define QTIP_IS_CPP (1U)
+#else
+#define QTIP_CPP_SUPPORT_START
+#define QTIP_CPP_SUPPORT_END
+#define QTIP_IS_CPP (0U)
+// clang-format on
+#endif
+
+QTIP_CPP_SUPPORT_START
+
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -369,6 +383,8 @@ qtipStatus_t qtip_total_processed_items(qtipContext_t* pContext, size_t* pResult
 #endif // DISABLE_TELEMETRY
 
 #endif // QTIP_H
+
+QTIP_CPP_SUPPORT_END
 
 /**
  * @}
