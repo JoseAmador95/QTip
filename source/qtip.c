@@ -141,22 +141,19 @@ static qtipSize_t move_index(qtipContext_t* pContext, qtipSize_t index)
     return newHeadIndex;
 }
 
-static void advance_rear(qtipContext_t* pContext)
+static void sweep_items(qtipContext_t* pContext, qtipSize_t index)
 {
-    if (is_full(pContext) || is_empty(pContext))
+    void* pHead  = relative_index_to_address(pContext, index);
+    qtipSize_t i = 0U;
+
+    for (i = index; i < pContext->qty - 2U; i++)
     {
-        // Allign rear and front
-        pContext->rear = pContext->front;
+        const void* pNextItem = relative_index_to_address(pContext, i + 1U);
+        memcpy(pHead, pNextItem, pContext->itemSize);
+        pHead = (void*) pNextItem;
     }
-    else if (needs_rollover(pContext, pContext->rear))
-    {
-        // Rollover
-        pContext->rear = pContext->start;
-    }
-    else
-    {
-        pContext->rear += pContext->itemSize;
-    }
+
+    delete_item_relative(pContext, i + 1U);
 }
 
 /*
@@ -515,6 +512,77 @@ qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pResult)
     if (status == QTIP_STATUS_OK)
     {
         *pResult = count_items(pContext);
+    }
+
+    return status;
+}
+
+qtipStatus_t qtip_get_item_index(qtipContext_t* pContext, qtipSize_t index, void* pItem)
+{
+    qtipStatus_t status = QTIP_STATUS_OK;
+
+#ifndef SKIP_ARG_CHECK
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pItem));
+#endif
+
+#ifndef DISABLE_LOCK
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    status = CHECK_STATUS(status, (index <= pContext->qty) ? QTIP_STATUS_OK : QTIP_STATUS_INVALID_SIZE);
+
+    if (status == QTIP_STATUS_OK)
+    {
+        read_item_relative(pContext, index, pItem);
+    }
+
+    return status;
+}
+
+qtipStatus_t qtip_remove_item_index(qtipContext_t* pContext, qtipSize_t index)
+{
+    qtipStatus_t status = QTIP_STATUS_OK;
+
+#ifndef SKIP_ARG_CHECK
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+#endif
+
+#ifndef DISABLE_LOCK
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    status = CHECK_STATUS(status, (index <= pContext->qty) ? QTIP_STATUS_OK : QTIP_STATUS_INVALID_SIZE);
+
+    if (status == QTIP_STATUS_OK)
+    {
+        delete_item_relative(pContext, index);
+    }
+
+    return status;
+}
+
+qtipStatus_t qtip_get_pop_index(qtipContext_t* pContext, qtipSize_t index, void* pItem)
+{
+    qtipStatus_t status = QTIP_STATUS_OK;
+
+#ifndef SKIP_ARG_CHECK
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pContext));
+    status = CHECK_STATUS(status, CHECK_NULL_PRT(pItem));
+#endif
+
+#ifndef DISABLE_LOCK
+    status = CHECK_STATUS(status, IS_LOCKED(pContext));
+#endif
+
+    status = CHECK_STATUS(status, (index <= pContext->qty) ? QTIP_STATUS_OK : QTIP_STATUS_INVALID_SIZE);
+
+    if (status == QTIP_STATUS_OK)
+    {
+        read_item_relative(pContext, index, pItem);
+        delete_item_relative(pContext, index);
+        sweep_items(pContext, index);
+        // delete_item(pContext, index);
     }
 
     return status;

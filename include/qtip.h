@@ -281,6 +281,68 @@ qtipStatus_t qtip_is_empty(qtipContext_t* pContext);
  */
 qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pResult);
 
+/**
+ * @brief      Gets the item from an intex in the queue
+ * @details    Returns the item in the requested position, where `index = 0`
+ *             results in the item at the front of the queue.
+ * @param[in]  pContext Pointer to queue context
+ * @param[in]  index    Item index
+ * @param[out] pItem    Pointer to the variable to hold the result
+ * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                 |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` or `pItem` is NULL   |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | Index unavailable               |
+ */
+qtipStatus_t qtip_get_item_index(qtipContext_t* pContext, qtipSize_t index, void* pItem);
+
+/**
+ * @brief      Removes the item from an intex in the queue
+ * @details    Removes the item in the requested position, where `index = 0`
+ *             is the item at the front of the queue.
+ * @param[in]  pContext Pointer to queue context
+ * @param[in]  index    Item index
+ * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                 |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` is NULL              |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | Index unavailable               |
+ */
+qtipStatus_t qtip_remove_item_index(qtipContext_t* pContext, qtipSize_t index);
+
+/**
+ * @brief      Pops the item from an intex in the queue
+ * @details    Returns and removes the item in the requested position,
+ *             where `index = 0` is the item at the front of the queue.
+ * @param[in]  pContext Pointer to queue context
+ * @param[in]  index    Item index
+ * @param[out] pItem    Pointer to the variable to hold the result
+ * @returns    Operation status
+ *
+ * @details
+ *    | Returned @ref qtipStatus_t    | Reason                          |
+ *    | ----------------------------- | ------------------------------- |
+ *    | @ref QTIP_STATUS_OK           | Operation successful            |
+ *    | @ref QTIP_STATUS_LOCKED       | Queue is locked                 |
+ *    | @ref QTIP_STATUS_NULL_PTR     | `pContext` or `pItem` is NULL   |
+ *    | @ref QTIP_STATUS_FULL         | NA                              |
+ *    | @ref QTIP_STATUS_EMPTY        | NA                              |
+ *    | @ref QTIP_STATUS_INVALID_SIZE | Index unavailable               |
+ */
+qtipStatus_t qtip_get_pop_index(qtipContext_t* pContext, qtipSize_t index, void* pItem);
+
 #endif // REDUCED_API
 
 #ifndef DISABLE_LOCK
