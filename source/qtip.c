@@ -557,6 +557,8 @@ qtipStatus_t qtip_remove_item_index(qtipContext_t* pContext, qtipSize_t index)
     if (status == QTIP_STATUS_OK)
     {
         delete_item_relative(pContext, index);
+        sweep_items(pContext, index);
+        pContext->qty--;
     }
 
     return status;
@@ -582,7 +584,7 @@ qtipStatus_t qtip_get_pop_index(qtipContext_t* pContext, qtipSize_t index, void*
         read_item_relative(pContext, index, pItem);
         delete_item_relative(pContext, index);
         sweep_items(pContext, index);
-        // delete_item(pContext, index);
+        pContext->qty--;
     }
 
     return status;
