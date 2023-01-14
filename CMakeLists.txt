@@ -29,5 +29,9 @@ if(DEFINED QTIP_SIZE_TYPE)
     target_compile_definitions(${PROJECT_NAME} PUBLIC SIZE_TYPE=${QTIP_SIZE_TYPE})
 endif()
 
-add_subdirectory(thirdparty/unity EXCLUDE_FROM_ALL)
-add_subdirectory(test EXCLUDE_FROM_ALL)
+set(STANDALONE_BUILD CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+
+if(${STANDALONE_BUILD})
+    add_subdirectory(thirdparty/unity EXCLUDE_FROM_ALL)
+    add_subdirectory(test EXCLUDE_FROM_ALL)
+endif()
