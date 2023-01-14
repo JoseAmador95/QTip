@@ -17,6 +17,8 @@
 #define QTIP_ASSERT_LOCKED(exp)       TEST_ASSERT(QTIP_STATUS_LOCKED == (exp))
 #define QTIP_ASSERT_INVALID_SIZE(exp) TEST_ASSERT(QTIP_STATUS_INVALID_SIZE == (exp))
 
+#define QTIP_ASSERT_ITEM(expected, actual) TEST_ASSERT_EQUAL_size_t((expected), (actual))
+
 #define QUEUE_SIZE 10U
 
 typedef uint32_t type_t;
@@ -131,7 +133,7 @@ void test_purge(void)
 void test_get_front_rear(void)
 {
     const type_t itemFront = 1U;
-    const type_t itemRear  = 10U;
+    const type_t itemRear  = QUEUE_SIZE;
     type_t item            = 0U;
 
     for (int i = itemFront; i <= itemRear; i++)
@@ -144,6 +146,90 @@ void test_get_front_rear(void)
     item = 0U;
     QTIP_ASSERT_OK(qtip_get_rear(&context, &item));
     TEST_ASSERT_EQUAL_UINT32(itemRear, item);
+}
+
+void test_get_index(void)
+{
+    const qtipSize_t firstPut  = QUEUE_SIZE - 1U;
+    const qtipSize_t firstPop  = firstPut - 1U;
+    const qtipSize_t secondPut = 3U;
+    const qtipSize_t index     = 3;
+    const type_t expectedItem  = firstPut + secondPut - 1U;
+    type_t item                = 0U;
+
+    for (int i = 0; i < firstPut; i++)
+    {
+        QTIP_ASSERT_OK(qtip_put(&context, &i));
+    }
+    for (int i = 0; i < firstPop; i++)
+    {
+        QTIP_ASSERT_OK(qtip_pop(&context, &i));
+    }
+    for (int i = 0; i < secondPut; i++)
+    {
+        int item = i + firstPut;
+        QTIP_ASSERT_OK(qtip_put(&context, &item));
+    }
+
+    QTIP_ASSERT_OK(qtip_get_item_index(&context, index, &item));
+    TEST_ASSERT_EQUAL_size_t(expectedItem, item);
+}
+
+void test_remove_index(void) // NOLINT(readability-function-cognitive-complexity)
+{
+    const qtipSize_t index = 2;
+    qtipSize_t size        = 0U;
+    type_t item            = 0U;
+
+    for (int i = 0; i < QUEUE_SIZE; i++)
+    {
+        QTIP_ASSERT_OK(qtip_put(&context, &i));
+    }
+
+    QTIP_ASSERT_OK(qtip_remove_item_index(&context, index));
+    QTIP_ASSERT_OK(qtip_count_items(&context, &size));
+    TEST_ASSERT_EQUAL_size_t(QUEUE_SIZE - 1U, size);
+
+    QTIP_ASSERT_OK(qtip_pop(&context, &item));
+    QTIP_ASSERT_ITEM(0U, item);
+
+    QTIP_ASSERT_OK(qtip_pop(&context, &item));
+    QTIP_ASSERT_ITEM(1U, item);
+
+    QTIP_ASSERT_OK(qtip_pop(&context, &item));
+    QTIP_ASSERT_ITEM(3U, item);
+
+    QTIP_ASSERT_OK(qtip_pop(&context, &item));
+    QTIP_ASSERT_ITEM(4U, item);
+}
+
+void test_pop_index(void) // NOLINT(readability-function-cognitive-complexity)
+{
+    const qtipSize_t index = 2;
+    qtipSize_t size        = 0U;
+    type_t item            = 0U;
+
+    for (int i = 0; i < QUEUE_SIZE; i++)
+    {
+        QTIP_ASSERT_OK(qtip_put(&context, &i));
+    }
+
+    QTIP_ASSERT_OK(qtip_get_pop_index(&context, index, &item));
+    QTIP_ASSERT_OK(qtip_count_items(&context, &size));
+    TEST_ASSERT_EQUAL_size_t(QUEUE_SIZE - 1U, size);
+    QTIP_ASSERT_ITEM(index, item);
+
+    QTIP_ASSERT_OK(qtip_pop(&context, &item));
+    QTIP_ASSERT_ITEM(0U, item);
+
+    QTIP_ASSERT_OK(qtip_pop(&context, &item));
+    QTIP_ASSERT_ITEM(1U, item);
+
+    QTIP_ASSERT_OK(qtip_pop(&context, &item));
+    QTIP_ASSERT_ITEM(3U, item);
+
+    QTIP_ASSERT_OK(qtip_pop(&context, &item));
+    QTIP_ASSERT_ITEM(4U, item);
 }
 
 void test_lock(void)
