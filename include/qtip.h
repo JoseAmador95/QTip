@@ -73,8 +73,8 @@ typedef struct
     qtipSize_t maxItems; //!< Number of items allowed in the queue
     qtipSize_t qty;      //!< Current number of items in the queue
     void* start;         //!< Pointer to the start of the queue
-    qtipSize_t front;    //!< Pointer to the front of the queue
-    qtipSize_t rear;     //!< Pointer to the rear of the queue
+    qtipSize_t front;    //!< Absolute index of the front of the queue
+    qtipSize_t rear;     //!< Absolute index of the rear of the queue
     size_t itemSize;     //!< Size of each item in the queue
 #ifndef DISABLE_LOCK
     bool locked; //!< Lock status
@@ -286,7 +286,7 @@ qtipStatus_t qtip_count_items(qtipContext_t* pContext, qtipSize_t* pResult);
  * @details    Returns the item in the requested position, where `index = 0`
  *             results in the item at the front of the queue.
  * @param[in]  pContext Pointer to queue context
- * @param[in]  index    Item index
+ * @param[in]  index    Item index relative to the front of the queue (0 -> front)
  * @param[out] pItem    Pointer to the variable to hold the result
  * @returns    Operation status
  *
@@ -307,7 +307,7 @@ qtipStatus_t qtip_get_item_index(qtipContext_t* pContext, qtipSize_t index, void
  * @details    Removes the item in the requested position, where `index = 0`
  *             is the item at the front of the queue.
  * @param[in]  pContext Pointer to queue context
- * @param[in]  index    Item index
+ * @param[in]  index    Item index relative to the front of the queue (0 -> front)
  * @returns    Operation status
  *
  * @details
@@ -327,7 +327,7 @@ qtipStatus_t qtip_remove_item_index(qtipContext_t* pContext, qtipSize_t index);
  * @details    Returns and removes the item in the requested position,
  *             where `index = 0` is the item at the front of the queue.
  * @param[in]  pContext Pointer to queue context
- * @param[in]  index    Item index
+ * @param[in]  index    Item index relative to the front of the queue (0 -> front)
  * @param[out] pItem    Pointer to the variable to hold the result
  * @returns    Operation status
  *
