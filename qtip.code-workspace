@@ -13,7 +13,6 @@
 			"thirdparty/unity/": true,
 			"build/": true
 		},
-		"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
 		"C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
 			"clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling"
 		],
