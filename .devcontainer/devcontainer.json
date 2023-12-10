@@ -1,14 +1,12 @@
 {
     "name": "qtip-devcontainer",
-    "image": "docker.io/joseamador95/xochi-dev",
+    "image": "docker.io/joseamador95/devcontainer:main",
     "customizations": {
         "vscode": {
             "extensions": [
                 "VisualStudioExptTeam.vscodeintellicode",
                 "albert.TabOut",
-                "numaru.vscode-ceedling-test-adapter",
                 "ms-vscode.cpptools",
-                "twxs.cmake",
                 "ms-vscode.cmake-tools"
             ]
         }
