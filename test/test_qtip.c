@@ -289,3 +289,23 @@ void test_invalid_size(void)
     QTIP_ASSERT_INVALID_SIZE(qtip_init(&context, queue, 0U, sizeof(type_t)));
     QTIP_ASSERT_INVALID_SIZE(qtip_init(&context, queue, QUEUE_SIZE, 0U));
 }
+
+int main(void)
+{
+    UNITY_BEGIN();
+    RUN_TEST(test_put_pop);
+    RUN_TEST(test_peek);
+    RUN_TEST(test_rollover);
+    RUN_TEST(test_empty);
+    RUN_TEST(test_stress);
+    RUN_TEST(test_purge);
+    RUN_TEST(test_get_front_rear);
+    RUN_TEST(test_get_index);
+    RUN_TEST(test_remove_index);
+    RUN_TEST(test_pop_index);
+    RUN_TEST(test_lock);
+    RUN_TEST(test_telemetry);
+    RUN_TEST(test_null_ptr);
+    RUN_TEST(test_invalid_size);
+    UNITY_END();
+}
