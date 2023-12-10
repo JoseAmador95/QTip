@@ -1,12 +1,19 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(qtip VERSION 0.0.0)
-enable_language(C CXX)
+enable_language(C)
 set(CMAKE_C_STANDARD 17)
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/source/*.c)
-add_library(${PROJECT_NAME} STATIC ${SRC})
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+add_library(
+    ${PROJECT_NAME}
+    STATIC
+        ${CMAKE_CURRENT_LIST_DIR}/source/qtip.c
+)
+
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}/include
+)
 
 option(QTIP_REDUCED_API "Reduce the public API to save memory" OFF)
 option(QTIP_DISABLE_LOCK "Disable the queue lock" OFF)
@@ -29,9 +36,7 @@ if(DEFINED QTIP_SIZE_TYPE)
     target_compile_definitions(${PROJECT_NAME} PUBLIC SIZE_TYPE=${QTIP_SIZE_TYPE})
 endif()
 
-set(STANDALONE_BUILD CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-
-if(${STANDALONE_BUILD})
-    add_subdirectory(thirdparty/unity EXCLUDE_FROM_ALL)
-    add_subdirectory(test EXCLUDE_FROM_ALL)
+if(PROJECT_IS_TOP_LEVEL)
+    enable_testing()
+    add_subdirectory(test)
 endif()
