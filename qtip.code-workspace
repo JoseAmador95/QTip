@@ -5,10 +5,10 @@
 		}
 	],
 	"settings": {
-		"C_Cpp.clang_format_path": "/usr/bin/clang-format",
+		"C_Cpp.clang_format_path": "clang-format",
 		"C_Cpp.codeAnalysis.clangTidy.enabled": true,
 		"C_Cpp.clang_format_sortIncludes": true,
-		"C_Cpp.codeAnalysis.clangTidy.path": "/usr/bin/clang-tidy",
+		"C_Cpp.codeAnalysis.clangTidy.path": "clang-tidy",
 		"C_Cpp.codeAnalysis.exclude": {
 			"thirdparty/unity/": true,
 			"build/": true
@@ -17,7 +17,7 @@
 		"C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
 			"clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling"
 		],
-		"cmake.cmakePath": "/usr/bin/cmake",
+		"cmake.cmakePath": "cmake",
 		"C_Cpp.codeAnalysis.clangTidy.useBuildPath": false,
 		"C_Cpp.default.cStandard": "c17",
 		"C_Cpp.loggingLevel": "Warning",
