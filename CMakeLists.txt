@@ -3,6 +3,12 @@ project(qtip VERSION 0.0.0)
 enable_language(C)
 set(CMAKE_C_STANDARD 17)
 
+find_program(
+    CLANG_TIDY_EXE
+    NAMES "clang-tidy"
+    DOC "Path to clang-tidy executable"
+)
+
 add_library(
     ${PROJECT_NAME}
     STATIC
@@ -14,6 +20,15 @@ target_include_directories(
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/include
 )
+
+if(CLANG_TIDY_EXE)
+    message("Clang tidy found")
+    set_target_properties(
+        ${PROJECT_NAME}
+        PROPERTIES
+            CXX_CLANG_TIDY "${CLANG_TIDY_EXE}"
+    )
+endif()
 
 option(QTIP_REDUCED_API "Reduce the public API to save memory" OFF)
 option(QTIP_DISABLE_LOCK "Disable the queue lock" OFF)
