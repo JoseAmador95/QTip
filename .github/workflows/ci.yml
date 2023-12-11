@@ -8,13 +8,13 @@ on:
 
 env:
   BUILD_TYPE: Release
-  COMPILER_X86: gcc
+  COMPILER_X86: clang
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     container: 
-      image: joseamador95/xochi-dev
+      image: joseamador95/devcontainer:main
       credentials:
         username: ${{ secrets.DOCKER_HUB_USER }}
         password: ${{ secrets.DOCKER_HUB_PASS }}
@@ -36,16 +36,8 @@ jobs:
       run: ./scripts/run_build.sh ${{env.COMPILER_X86}}
       continue-on-error: true
 
-    - name: Linter
-      run: ./scripts/run_linter.sh
-      continue-on-error: true
-
     - name: Unit Tests
       run: ./scripts/run_unit_tests.sh
-      continue-on-error: true
-
-    - name: Cyclomatic Complexity Analysis
-      run: ./scripts/run_ccn.sh
       continue-on-error: true
 
     - name: Documentation

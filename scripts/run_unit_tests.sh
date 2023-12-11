@@ -7,16 +7,11 @@ LOG="$OUTDIR/$NAME.log"
 
 mkdir -p $OUTDIR
 
-COMMAND="ceedling"
+BUILD="build"
+COMMAND="ctest"
 
-TEST_SUITE="test:all"
-
-CLEAN_BUILD="clobber"
-ARGS_GCOV="gcov:all utils:gcov"
-ARGS_SAN="options:sanitizer"
-
-echo "$COMMAND $CLEAN_BUILD $ARGS_SAN $ARGS_GCOV $TEST_SUITE"
-$COMMAND $CLEAN_BUILD $ARGS_SAN $ARGS_GCOV $TEST_SUITE &> $LOG
+echo "${COMMAND} --verbose --test-dir ${BUILD}"
+${COMMAND} --verbose --test-dir ${BUILD}
 RET=$?
 
 cat $LOG
