@@ -13,8 +13,8 @@ SRC="$(pwd)"
 BUILD="build"
 TARGET="qtip"
 
-echo "$COMMAND -S $SRC -B $BUILD -DCMAKE_C_COMPILER=$COMPILER"
-$COMMAND -S $SRC -B $BUILD -DCMAKE_C_COMPILER=$COMPILER &>> $LOG
+echo "$COMMAND -S $SRC -B $BUILD -G Ninja"
+$COMMAND -S $SRC -B $BUILD -G Ninja &>> $LOG
 
 echo "$COMMAND --build $BUILD --target $TARGET"
 $COMMAND --build $BUILD --target $TARGET &>> $LOG
