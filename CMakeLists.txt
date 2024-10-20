@@ -13,6 +13,7 @@ add_library(
     ${PROJECT_NAME}
     STATIC
         ${CMAKE_CURRENT_LIST_DIR}/source/qtip.c
+        ${CMAKE_CURRENT_LIST_DIR}/include/qtip.h
 )
 
 target_include_directories(
@@ -30,6 +31,7 @@ if(CLANG_TIDY_EXE)
     )
 endif()
 
+option(ENABLE_TESTS "Enable tests" OFF)
 option(QTIP_REDUCED_API "Reduce the public API to save memory" OFF)
 option(QTIP_DISABLE_LOCK "Disable the queue lock" OFF)
 option(QTIP_DISABLE_TELEMETRY "Disable queue telemetry to save memory" OFF)
@@ -51,7 +53,10 @@ if(DEFINED QTIP_SIZE_TYPE)
     target_compile_definitions(${PROJECT_NAME} PUBLIC SIZE_TYPE=${QTIP_SIZE_TYPE})
 endif()
 
-if(PROJECT_IS_TOP_LEVEL)
+if(PROJECT_IS_TOP_LEVEL AND ENABLE_TESTS)
     enable_testing()
     add_subdirectory(test)
 endif()
+
+install(TARGETS ${PROJECT_NAME})
+install(FILES ${CMAKE_CURRENT_LIST_DIR}/include/qtip.h DESTINATION include)
