@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.22.1)
-project(qtip VERSION 0.0.0)
-enable_language(C)
+project(qtip VERSION 0.0.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 17)
 
 find_program(
